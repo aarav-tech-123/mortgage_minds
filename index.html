@@ -167,7 +167,6 @@
         <div class="banner-style-two">
             <div class="container">
                 <div class="content">
-
                     <div class="row align-items-center">
                         <div class="col-xl-7 col-lg-7">
                             <div class="information">
@@ -466,31 +465,32 @@
     <!-- Start Estimate 
     ============================================= -->
     <div class="estimate-style-two-area default-padding bg-half-bottom-light bg-theme bg-cover mix-blend-theme overflow-hidden"
-        style="background-image: url(assets/img/banner/3.jpg);">
+        style="background-image: url(assets/img/home-page.avif);">
         <div class="infinite-text-box">
             <div class="infinite-text">
-                <div class="item">Insurance</div>
-                <div class="item">With</div>
-                <div class="item">Protection</div>
-                <div class="item">For</div>
-                <div class="item">Better</div>
-                <div class="item">Life</div>
+                <div class="item">First</div>
+                <div class="item">Home</div>
+                <div class="item">Buyer</div>
+                <div class="item">Loan</div>
+                <div class="item">/</div>
+                <div class="item">Refinancing</div>
             </div>
             <div class="infinite-text">
-                <div class="item">Insurance</div>
-                <div class="item">With</div>
-                <div class="item">Protection</div>
-                <div class="item">For</div>
-                <div class="item">Better</div>
-                <div class="item">Life</div>
+                <div class="item">Options</div>
+                <div class="item">/</div>
+                <div class="item">Investment</div>
+                <div class="item">Property</div>
+                <div class="item"></div>
+                <div class="item"></div>
             </div>
         </div>
         <div class="container">
             <div class="row">
-                <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2">
+                <div class="">
                     <div class="site-heading text-center text-light">
-                        <h4 class="sub-title"> Get free quote</h4>
-                        <h2 class="title split-text">Get an insurance quote to get started</h2>
+                        <h4 class="sub-title"> SPEAK TO AN EXPERT</h4>
+                        <h2 class="title split-text">Speak to our team today and take the first step towards your
+                            Mortgage Goals.</h2>
                     </div>
                 </div>
             </div>
@@ -500,207 +500,209 @@
                         <img class="animate" data-animate="fadeInUp" src="assets/img/thumb/2.jpg" alt="Image Not Found">
                     </div>
                     <div class="col-lg-6">
-                        <div class="quote-form-style-two">
+                        <div class="quote-form-style-two improved-forms">
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="tab_1" data-bs-toggle="tab"
                                         data-bs-target="#tabs_1" type="button" role="tab" aria-controls="tabs_1"
-                                        aria-selected="true"><i class="fas fa-home"></i> Home</button>
+                                        aria-selected="true"><i class="fas fa-home"></i> First Home Buyer</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="tab_2" data-bs-toggle="tab" data-bs-target="#tabs_2"
                                         type="button" role="tab" aria-controls="tabs_2" aria-selected="false"><i
-                                            class="fas fa-briefcase"></i> Business</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="tab_3" data-bs-toggle="tab" data-bs-target="#tabs_3"
-                                        type="button" role="tab" aria-controls="tabs_3" aria-selected="false"><i
-                                            class="fas fa-heartbeat"></i> Health</button>
+                                            class="fas fa-sync-alt"></i> Refinance Option</button>
                                 </li>
                             </ul>
                             <div class="tab-content" id="myTabContent">
                                 <div class="tab-pane fade show active" id="tabs_1" role="tabpanel"
                                     aria-labelledby="tab_1">
-                                    <form action="#" class="quote-style-two">
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label for="name">Name</label>
-                                                    <input class="form-control" id="name" name="name"
-                                                        placeholder="Jonathom Doe" type="text">
+                                    <form action="save_first_home.php" method="POST">
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label for="first_name">First Name *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-user"></i>
+                                                    <input type="text" id="first_name" name="first_name"
+                                                        placeholder="John" required>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label for="phone">Phone</label>
-                                                    <input class="form-control" id="phone" name="phone"
-                                                        placeholder="+4733378901" type="text">
+                                            <div class="form-group">
+                                                <label for="last_name">Last Name *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-user"></i>
+                                                    <input type="text" id="last_name" name="last_name" placeholder="Doe"
+                                                        required>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <label for="email">Email Address</label>
-                                                    <input class="form-control" id="email" name="email"
-                                                        placeholder="support@consua.com" type="email">
+                                            <div class="form-group">
+                                                <label for="email">Email Address *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-envelope"></i>
+                                                    <input type="email" id="email" name="email"
+                                                        placeholder="john@example.com" required>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <label for="subject">Select Type Of Insurance</label>
-                                                    <select id="subject">
-                                                        <option value="1">Life Insurance</option>
-                                                        <option value="2">Business Insurance</option>
-                                                        <option value="4">Health Insurance</option>
-                                                        <option value="5">Car Insurance</option>
-                                                        <option value="6">Home Insurance</option>
+                                            <div class="form-group">
+                                                <label for="phone">Phone Number *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-phone"></i>
+                                                    <input type="text" id="phone" name="phone"
+                                                        placeholder="+64 9 123 4567" required>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="where_are_you_located">Location *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-map-marker-alt"></i>
+                                                    <select id="where_are_you_located" name="where_are_you_located"
+                                                        required>
+                                                        <option value="">Select location</option>
+                                                        <option>Auckland</option>
+                                                        <option>North Island</option>
+                                                        <option>South Island</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="what_describe_you_the_most">I'm *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-clipboard-list"></i>
+                                                    <select id="what_describe_you_the_most"
+                                                        name="what_describe_you_the_most" required>
+                                                        <option value="">Select option</option>
+                                                        <option>Looking for pre-approval</option>
+                                                        <option>Looking to put an offer</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="what_is_your_household_income">Household Income *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-dollar-sign"></i>
+                                                    <select id="what_is_your_household_income"
+                                                        name="what_is_your_household_income" required>
+                                                        <option value="">Select income</option>
+                                                        <option>Under $100k</option>
+                                                        <option>$100k - $150k</option>
+                                                        <option>$150k & above</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="what_deposit_do_you_have">Deposit Available *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-piggy-bank"></i>
+                                                    <select id="what_deposit_do_you_have"
+                                                        name="what_deposit_do_you_have" required>
+                                                        <option value="">Select deposit</option>
+                                                        <option>$20k - $50k</option>
+                                                        <option>$50k - $100k</option>
+                                                        <option>$100k & above</option>
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="price-range-slider">
-                                                    <p class="range-value">
-                                                        <span>Limits of Balance: </span>
-                                                        <input type="text" id="amount" readonly>
-                                                    </p>
-                                                    <div id="slider-range" class="range-bar"></div>
-                                                </div>
+                                        <div class="form-group full-width">
+                                            <label for="best_time_to_call">Best Time to Call (Optional)</label>
+                                            <div class="input-icon">
+                                                <i class="fas fa-clock"></i>
+                                                <input type="text" id="best_time_to_call" name="best_time_to_call"
+                                                    placeholder="e.g., Weekdays after 5pm">
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <button type="submit" name="submit" id="submit">
-                                                    Get a Quote
-                                                </button>
-                                            </div>
-                                        </div>
+                                        <button type="submit" class="submit-btn">
+                                            <i class="fas fa-paper-plane"></i> Get Free Mortgage Advice
+                                        </button>
                                     </form>
+
                                 </div>
-                                <div class="tab-pane fade" id="tabs_2" role="tabpanel" aria-labelledby="tab_2">
-                                    <form action="#" class="quote-style-two">
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label for="name2">Name</label>
-                                                    <input class="form-control" id="name2" name="name2"
-                                                        placeholder="Jonathom Doe" type="text">
+                                <div class="tab-pane fade show" id="tabs_2" role="tabpanel" aria-labelledby="tab_2">
+                                    <form action="save_refinance.php" method="POST">
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label for="ref_first_name">First Name *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-user"></i>
+                                                    <input type="text" id="ref_first_name" name="first_name"
+                                                        placeholder="John" required>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label for="phone2">Phone</label>
-                                                    <input class="form-control" id="phone2" name="phone2"
-                                                        placeholder="+4733378901" type="text">
+                                            <div class="form-group">
+                                                <label for="ref_last_name">Last Name *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-user"></i>
+                                                    <input type="text" id="ref_last_name" name="last_name"
+                                                        placeholder="Doe" required>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <label for="email2">Email Address</label>
-                                                    <input class="form-control" id="email2" name="email2"
-                                                        placeholder="support@consua.com" type="email">
+                                            <div class="form-group">
+                                                <label for="ref_email">Email Address *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-envelope"></i>
+                                                    <input type="email" id="ref_email" name="email"
+                                                        placeholder="john@example.com" required>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <label for="subject2">Select Type Of Insurance</label>
-                                                    <select id="subject2">
-                                                        <option value="1">Life Insurance</option>
-                                                        <option value="2">Business Insurance</option>
-                                                        <option value="4">Health Insurance</option>
-                                                        <option value="5">Car Insurance</option>
-                                                        <option value="6">Home Insurance</option>
+                                            <div class="form-group">
+                                                <label for="ref_phone">Phone Number *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-phone"></i>
+                                                    <input type="text" id="ref_phone" name="phone_number"
+                                                        placeholder="+64 9 123 4567" required>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="what_is_your_mortgage_balance">Mortgage Balance *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-home"></i>
+                                                    <select id="what_is_your_mortgage_balance"
+                                                        name="what_is_your_mortgage_balance" required>
+                                                        <option value="">Select balance</option>
+                                                        <option>$100k - $250k</option>
+                                                        <option>$250k - $600k</option>
+                                                        <option>$600k - $1 Mil</option>
+                                                        <option>Above $1 Mil</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="what_is_your_property_value">Property Value *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-building"></i>
+                                                    <select id="what_is_your_property_value"
+                                                        name="what_is_your_property_value" required>
+                                                        <option value="">Select value</option>
+                                                        <option>$350k - $600k</option>
+                                                        <option>$600k - $850k</option>
+                                                        <option>$850k - above</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="when_will_your_fix_rate_expire">Fixed Rate Expiry *</label>
+                                                <div class="input-icon">
+                                                    <i class="fas fa-calendar-alt"></i>
+                                                    <select id="when_will_your_fix_rate_expire"
+                                                        name="when_will_your_fix_rate_expire" required>
+                                                        <option value="">Select timeframe</option>
+                                                        <option>Already on floating</option>
+                                                        <option>In next 90 days</option>
+                                                        <option>More than 90 days</option>
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="price-range-slider">
-                                                    <p class="range-value">
-                                                        <span>Limits of Balance: </span>
-                                                        <input type="text" id="amount-2" readonly>
-                                                    </p>
-                                                    <div id="slider-range-2" class="range-bar"></div>
-                                                </div>
+                                        <div class="form-group full-width">
+                                            <label for="ref_best_time">Best Time to Call (Optional)</label>
+                                            <div class="input-icon">
+                                                <i class="fas fa-clock"></i>
+                                                <input type="text" id="ref_best_time" name="best_time_to_call"
+                                                    placeholder="e.g., Weekdays between 9am-5pm">
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <button type="submit" name="submit2" id="submit2">
-                                                    Get a Quote
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="tab-pane fade" id="tabs_3" role="tabpanel" aria-labelledby="tab_3">
-                                    <form action="#" class="quote-style-two">
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label for="name3">Name</label>
-                                                    <input class="form-control" id="name3" name="name3"
-                                                        placeholder="Jonathom Doe" type="text">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label for="phone3">Phone</label>
-                                                    <input class="form-control" id="phone3" name="phone3"
-                                                        placeholder="+4733378901" type="text">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <label for="email3">Email Address</label>
-                                                    <input class="form-control" id="email3" name="email3"
-                                                        placeholder="support@consua.com" type="email">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <label for="subject3">Select Type Of Insurance</label>
-                                                    <select id="subject3">
-                                                        <option value="1">Life Insurance</option>
-                                                        <option value="2">Business Insurance</option>
-                                                        <option value="4">Health Insurance</option>
-                                                        <option value="5">Car Insurance</option>
-                                                        <option value="6">Home Insurance</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="price-range-slider">
-                                                    <p class="range-value">
-                                                        <span>Limits of Balance: </span>
-                                                        <input type="text" id="amount-3" readonly>
-                                                    </p>
-                                                    <div id="slider-range-3" class="range-bar"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <button type="submit" name="submit3" id="submit3">
-                                                    Get a Quote
-                                                </button>
-                                            </div>
-                                        </div>
+                                        <button type="submit" class="submit-btn">
+                                            <i class="fas fa-sync-alt"></i> Get Refinance Quote
+                                        </button>
                                     </form>
                                 </div>
                             </div>
@@ -714,7 +716,7 @@
 
     <!-- Start Brand
     ============================================= -->
-    <div class="brand-style-one-area default-padding-bottom" style="background-image: url(assets/img/shape/6.png);">
+    <div class="brand-style-one-area default-padding-bottom mt-5" style="background-image: url(assets/img/shape/6.png);">
         <div class="container">
             <div class="row align-center">
                 <div class="col-lg-5">
@@ -862,7 +864,8 @@
     <!-- Start Testimonial 
     ============================================= -->
     <!-- Elfsight Google Reviews | Mortgage Google Reviews  -->
-    <div class="elfsight-app-422b73fa-cfe8-4b3e-a0b4-25bda45211d8 mt-5" data-elfsight-app-lazy></div>
+    <div class="elfsight-app-422b73fa-cfe8-4b3e-a0b4-25bda45211d8" style="margin-bottom: 10%; margin-top: 5%;"
+        data-elfsight-app-lazy></div>
     <!-- End Testimonial -->
 
     <!-- Start Blog 
