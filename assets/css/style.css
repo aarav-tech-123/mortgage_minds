@@ -9855,7 +9855,7 @@ form.quote-style-four .price-range-slider .range-bar .ui-slider-handle {
 .brand-one-item {
 	position: relative;
 	z-index: 1;
-	padding: 50px;
+	/* padding: 50px; */
 }
 
 .brand-one-item::after {
@@ -9884,7 +9884,7 @@ form.quote-style-four .price-range-slider .range-bar .ui-slider-handle {
 
 /* Brand Two */
 .brand-style-two-carousel img {
-	max-height: 40px;
+	/* max-height: 40px; */
 }
 
 .brand-style-two-carousel {

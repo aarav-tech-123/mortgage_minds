@@ -382,30 +382,21 @@
 		const brandCarousel = new Swiper(".brand-style-two-carousel", {
 			// Optional parameters
 			loop: true,
-			freeMode: true,
-			grabCursor: true,
-			slidesPerView: 2,
-			spaceBetween: 50,
-			autoplay: true,
+			slidesPerView: 1,
+			spaceBetween: 30,
+			autoplay: {
+				delay: 3000,
+				disableOnInteraction: false,
+			},
 			pagination: {
 				el: ".swiper-pagination",
 				clickable: true,
 			},
 			navigation: {
-				nextEl: ".services-cat-next",
-				prevEl: ".services-cat-prev"
+				nextEl: ".brand-next",
+				prevEl: ".brand-prev"
 			},
-			breakpoints: {
-				768: {
-					slidesPerView: 3,
-				},
-				992: {
-					slidesPerView: 4,
-				},
-				1700: {
-					slidesPerView: 5,
-				},
-			},
+			effect: 'slide',
 		});
 
 
