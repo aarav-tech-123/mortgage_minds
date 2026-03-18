@@ -1,0 +1,2362 @@
+import { poolPromise } from "../config/db.js";
+
+// ==================== CONTACTS ====================
+
+/**
+ * @swagger
+ * /contacts:
+ *   post:
+ *     summary: Create a new contact
+ *     tags: [Contacts]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               lead_id:
+ *                 type: integer
+ *               client_name:
+ *                 type: string
+ *               contact_number:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               client_type:
+ *                 type: string
+ *               enrolled_date:
+ *                 type: string
+ *                 format: date
+ *               tax_debt_amount:
+ *                 type: number
+ *               debt_amount:
+ *                 type: number
+ *               type_of_debt:
+ *                 type: string
+ *               sin_number:
+ *                 type: string
+ *               business_number:
+ *                 type: string
+ *               bn_number:
+ *                 type: string
+ *               cra_online_authorization:
+ *                 type: boolean
+ *               upfront_assessment_fee:
+ *                 type: number
+ *               status:
+ *                 type: string
+ *               remark:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Contact created successfully
+ *       400:
+ *         description: Validation error
+ *       500:
+ *         description: Server error
+ */
+// Create Contact
+export const createContact = async (req, res) => {
+  const {
+    lead_id,
+    client_name,
+    contact_number,
+    email,
+    client_type,
+    enrolled_date,
+    tax_debt_amount,
+    debt_amount,
+    type_of_debt,
+    sin_number,
+    business_number,
+    bn_number,
+    cra_online_authorization,
+    upfront_assessment_fee,
+    status,
+    remark
+  } = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    // Validate lead_id if provided
+    if (lead_id) {
+      const leadExists = await pool.request()
+        .input("lead_id", lead_id)
+        .query("SELECT id FROM Leads WHERE id = @lead_id");
+      if (leadExists.recordset.length === 0) {
+        return res.status(400).json({ message: "Lead does not exist." });
+      }
+
+      // Check if a contact already exists for this lead_id
+      const existingContact = await pool.request()
+        .input("lead_id", lead_id)
+        .query("SELECT id FROM Contacts WHERE lead_id = @lead_id");
+      if (existingContact.recordset.length > 0) {
+        return res.status(400).json({ message: "A contact already exists for this lead." });
+      }
+    }
+
+    // Get the inserted contact ID using OUTPUT clause
+    const result = await pool.request()
+      .input("lead_id", lead_id || null)
+      .input("client_name", client_name || null)
+      .input("contact_number", contact_number || null)
+      .input("email", email || null)
+      .input("client_type", client_type || null)
+      .input("enrolled_date", enrolled_date || null)
+      .input("tax_debt_amount", tax_debt_amount || null)
+      .input("debt_amount", debt_amount || null)
+      .input("type_of_debt", type_of_debt || null)
+      .input("sin_number", sin_number || null)
+      .input("business_number", business_number || null)
+      .input("bn_number", bn_number || null)
+      .input("cra_online_authorization", cra_online_authorization || false)
+      .input("upfront_assessment_fee", upfront_assessment_fee || null)
+      .input("status", status || 'New')
+      .input("remark", remark || null)
+      .query(`
+        INSERT INTO Contacts (
+          lead_id, client_name, contact_number, email, client_type, enrolled_date,
+          tax_debt_amount, debt_amount, type_of_debt, sin_number, business_number,
+          bn_number, cra_online_authorization, upfront_assessment_fee, status, remark
+        ) OUTPUT INSERTED.id AS id VALUES (
+          @lead_id, @client_name, @contact_number, @email, @client_type, @enrolled_date,
+          @tax_debt_amount, @debt_amount, @type_of_debt, @sin_number, @business_number,
+          @bn_number, @cra_online_authorization, @upfront_assessment_fee, @status, @remark
+        )
+      `);
+
+    const contactId = result.recordset[0].id;
+    // console.log(`Contact created with ID: ${contactId}`);
+
+    // Create status timeline entry if status is provided
+    if (status) {
+      const changed_by = req.user ? req.user.id : null;
+      await pool.request()
+        .input("contact_id", contactId)
+        .input("old_status", 'New')
+        .input("new_status", status || 'New')
+        .input("note", remark)
+        .input("changed_by", changed_by)
+        .query(`
+          INSERT INTO ContactStatusTimeline (contact_id, old_status, new_status, note, changed_by)
+          VALUES (@contact_id, @old_status, @new_status, @note, @changed_by)
+        `);
+    }
+
+    // Get the created contact data
+    const contactData = await pool.request()
+      .input("id", contactId)
+      .query("SELECT * FROM Contacts WHERE id = @id");
+
+    res.status(201).json({ 
+      message: "Contact created successfully!", 
+      id: contactId,
+      contact: contactData.recordset[0]
+    });
+  } catch (err) {
+    console.error("Create Contact Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/**
+ * @swagger
+ * /contacts:
+ *   get:
+ *     summary: Get all contacts
+ *     tags: [Contacts]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of contacts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       500:
+ *         description: Server error
+ */
+// Get All Contacts
+export const getAllContacts = async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request().query("SELECT * FROM Contacts ORDER BY created_at DESC");
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("Get All Contacts Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/**
+ * @swagger
+ * /contacts/{id}:
+ *   get:
+ *     summary: Get contact by ID
+ *     tags: [Contacts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Contact details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Server error
+ */
+// Get Contact by ID
+export const getContactById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("id", id)
+      .query("SELECT * FROM Contacts WHERE id = @id");
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    res.json(result.recordset[0]);
+  } catch (err) {
+    console.error("Get Contact By ID Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/**
+ * @swagger
+ * /contacts/{id}:
+ *   put:
+ *     summary: Update contact by ID
+ *     tags: [Contacts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               lead_id:
+ *                 type: integer
+ *               client_name:
+ *                 type: string
+ *               contact_number:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               client_type:
+ *                 type: string
+ *               enrolled_date:
+ *                 type: string
+ *                 format: date
+ *               tax_debt_amount:
+ *                 type: number
+ *               debt_amount:
+ *                 type: number
+ *               type_of_debt:
+ *                 type: string
+ *               sin_number:
+ *                 type: string
+ *               business_number:
+ *                 type: string
+ *               bn_number:
+ *                 type: string
+ *               cra_online_authorization:
+ *                 type: boolean
+ *               upfront_assessment_fee:
+ *                 type: number
+ *               status:
+ *                 type: string
+ *               remark:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Contact updated successfully
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Server error
+ */
+// Update Contact
+export const updateContact = async (req, res) => {
+  const { id } = req.params;
+  const {
+    lead_id,
+    client_name,
+    contact_number,
+    email,
+    client_type,
+    enrolled_date,
+    tax_debt_amount,
+    debt_amount,
+    type_of_debt,
+    sin_number,
+    business_number,
+    bn_number,
+    cra_online_authorization,
+    upfront_assessment_fee,
+    status,
+    remark
+  } = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    // Check if contact exists
+    const existingContact = await pool.request()
+      .input("id", id)
+      .query("SELECT * FROM Contacts WHERE id = @id");
+
+    if (existingContact.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    const oldStatus = existingContact.recordset[0].status;
+
+    // Validate lead_id if provided
+    if (lead_id) {
+      const leadExists = await pool.request()
+        .input("lead_id", lead_id)
+        .query("SELECT id FROM Leads WHERE id = @lead_id");
+      if (leadExists.recordset.length === 0) {
+        return res.status(400).json({ message: "Lead does not exist." });
+      }
+    }
+
+    await pool.request()
+      .input("id", id)
+      .input("lead_id", lead_id || null)
+      .input("client_name", client_name || null)
+      .input("contact_number", contact_number || null)
+      .input("email", email || null)
+      .input("client_type", client_type || null)
+      .input("enrolled_date", enrolled_date || null)
+      .input("tax_debt_amount", tax_debt_amount || null)
+      .input("debt_amount", debt_amount || null)
+      .input("type_of_debt", type_of_debt || null)
+      .input("sin_number", sin_number || null)
+      .input("business_number", business_number || null)
+      .input("bn_number", bn_number || null)
+      .input("cra_online_authorization", cra_online_authorization || false)
+      .input("upfront_assessment_fee", upfront_assessment_fee || null)
+      .input("status", status || oldStatus)
+      .input("remark", remark || null)
+      .query(`
+        UPDATE Contacts SET
+          lead_id = @lead_id,
+          client_name = @client_name,
+          contact_number = @contact_number,
+          email = @email,
+          client_type = @client_type,
+          enrolled_date = @enrolled_date,
+          tax_debt_amount = @tax_debt_amount,
+          debt_amount = @debt_amount,
+          type_of_debt = @type_of_debt,
+          sin_number = @sin_number,
+          business_number = @business_number,
+          bn_number = @bn_number,
+          cra_online_authorization = @cra_online_authorization,
+          upfront_assessment_fee = @upfront_assessment_fee,
+          status = @status,
+          remark = @remark,
+          updated_at = GETDATE()
+        WHERE id = @id
+      `);
+
+    // Create status timeline entry if status changed
+    if (status && status !== oldStatus) {
+      const changed_by = req.user ? req.user.id : null;
+      await pool.request()
+        .input("contact_id", id)
+        .input("old_status", oldStatus)
+        .input("new_status", status)
+        .input("note", "Status changed")
+        .input("changed_by", changed_by)
+        .query(`
+          INSERT INTO ContactStatusTimeline (contact_id, old_status, new_status, note, changed_by)
+          VALUES (@contact_id, @old_status, @new_status, @note, @changed_by)
+        `);
+    }
+
+    res.json({ message: "Contact updated successfully!" });
+  } catch (err) {
+    console.error("Update Contact Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/**
+ * @swagger
+ * /contacts/{id}:
+ *   delete:
+ *     summary: Delete contact by ID
+ *     tags: [Contacts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Contact deleted successfully
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Server error
+ */
+// Delete Contact
+export const deleteContact = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const pool = await poolPromise;
+
+    // Check if contact exists
+    const existingContact = await pool.request()
+      .input("id", id)
+      .query("SELECT id FROM Contacts WHERE id = @id");
+
+    if (existingContact.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    // Delete related records first (cascade)
+    await pool.request().input("id", id).query("DELETE FROM ContactStatusTimeline WHERE contact_id = @id");
+    await pool.request().input("id", id).query("DELETE FROM ContactDocuments WHERE contact_id = @id");
+    await pool.request().input("id", id).query("DELETE FROM ContactDocumentRequests WHERE contact_id = @id");
+    await pool.request().input("id", id).query("DELETE FROM CRAConversations WHERE contact_id = @id");
+    await pool.request().input("id", id).query("DELETE FROM Contact_NOA_Income WHERE contact_id = @id");
+
+    // Delete contact
+    await pool.request()
+      .input("id", id)
+      .query("DELETE FROM Contacts WHERE id = @id");
+
+    res.json({ message: "Contact deleted successfully!" });
+  } catch (err) {
+    console.error("Delete Contact Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// ==================== CONTACT_NOA_INCOME ====================
+
+/**
+ * @swagger
+ * /contacts/{contactId}/noa-income:
+ *   post:
+ *     summary: Create multiple NOA incomes for a contact
+ *     tags: [Contact NOA Income]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                 tax_year:
+ *                   type: string
+ *                 noa_line_15000:
+ *                   type: number
+ *     responses:
+ *       201:
+ *         description: NOA Incomes created successfully
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Server error
+ */
+/**
+ * @swagger
+ * /contacts/{contactId}/noa-income:
+ *   get:
+ *     summary: Get all NOA incomes for a contact
+ *     tags: [Contact NOA Income]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of NOA incomes
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Server error
+ */
+// Create NOA Income (Multiple)
+// export const createNOAIncome = async (req, res) => {
+//   const { contactId } = req.params;
+//   const noaIncomeArray = req.body;
+
+//   try {
+//     const pool = await poolPromise;
+
+//     // Check if contact exists
+//     const contactExists = await pool.request()
+//       .input("id", contactId)
+//       .query("SELECT id FROM Contacts WHERE id = @id");
+
+//     if (contactExists.recordset.length === 0) {
+//       return res.status(404).json({ message: "Contact not found" });
+//     }
+
+//     // Validate that req.body is an array
+//     if (!Array.isArray(noaIncomeArray)) {
+//       return res.status(400).json({ message: "Request body must be an array of NOA Income objects" });
+//     }
+
+//     if (noaIncomeArray.length === 0) {
+//       return res.status(400).json({ message: "Array cannot be empty" });
+//     }
+
+//     const insertedIds = [];
+
+//     const insertedRecords = await pool.request()
+//       .input("contact_id", contactId)
+//       .query(`
+//         SELECT * FROM Contact_NOA_Income 
+//         WHERE id IN (${insertedIds.join(',')})
+//         ORDER BY id DESC
+//       `);
+
+//     res.status(201).json({ 
+//       message: "NOA Incomes created successfully!", 
+//       insertedCount: insertedIds.length,
+//       data: insertedRecords.recordset
+//     });
+//   } catch (err) {
+//     console.error("Create NOA Income Error:", err);
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// };
+
+export const createNOAIncome = async (req, res) => {
+  const { contactId } = req.params;
+  const noaIncomeArray = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    // Check contact
+    const contactExists = await pool.request()
+      .input("id", contactId)
+      .query("SELECT id FROM Contacts WHERE id = @id");
+
+    if (contactExists.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    if (!Array.isArray(noaIncomeArray) || noaIncomeArray.length === 0) {
+      return res.status(400).json({ message: "Request body must be a non-empty array" });
+    }
+
+    const insertedIds = [];
+
+    for (const item of noaIncomeArray) {
+      const { tax_year, noa_line_15000 } = item;
+
+      const result = await pool.request()
+        .input("contact_id", contactId)
+        .input("tax_year", tax_year)
+        .input("noa_line_15000", noa_line_15000)
+        .query(`
+          INSERT INTO Contact_NOA_Income (contact_id, tax_year, noa_line_15000)
+          OUTPUT INSERTED.id
+          VALUES (@contact_id, @tax_year, @noa_line_15000)
+        `);
+
+      insertedIds.push(result.recordset[0].id);
+    }
+
+    // Fetch inserted records
+    const insertedRecords = await pool.request()
+      .query(`
+        SELECT * FROM Contact_NOA_Income
+        WHERE id IN (${insertedIds.join(",")})
+        ORDER BY id DESC
+      `);
+
+    res.status(201).json({
+      message: "NOA Incomes created successfully!",
+      insertedCount: insertedIds.length,
+      data: insertedRecords.recordset
+    });
+
+  } catch (err) {
+    console.error("Create NOA Income Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/**
+ * @swagger
+ * /contacts/{contactId}/noa-income/{id}:
+ *   put:
+ *     summary: Update NOA income
+ *     tags: [Contact NOA Income]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               tax_year:
+ *                 type: string
+ *               noa_line_15000:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: NOA Income updated successfully
+ *       404:
+ *         description: NOA Income not found
+ *       500:
+ *         description: Server error
+ */
+/**
+ * @swagger
+ * /contacts/{contactId}/noa-income/{id}:
+ *   delete:
+ *     summary: Delete NOA income
+ *     tags: [Contact NOA Income]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: NOA Income deleted successfully
+ *       404:
+ *         description: NOA Income not found
+ *       500:
+ *         description: Server error
+ */
+// Get All NOA Incomes for a Contact
+export const getAllNOAIncomes = async (req, res) => {
+  const { contactId } = req.params;
+  try {
+    const pool = await poolPromise;
+
+    // Check if contact exists
+    const contactExists = await pool.request()
+      .input("id", contactId)
+      .query("SELECT id FROM Contacts WHERE id = @id");
+
+    if (contactExists.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    const result = await pool.request()
+      .input("contact_id", contactId)
+      .query("SELECT * FROM Contact_NOA_Income WHERE contact_id = @contact_id ORDER BY tax_year DESC");
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("Get All NOA Incomes Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Update NOA Income (Single or Multiple)
+export const updateNOAIncome = async (req, res) => {
+  const { contactId, id } = req.params;
+  const data = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    // Check if contact exists
+    const contactExists = await pool.request()
+      .input("id", contactId)
+      .query("SELECT id FROM Contacts WHERE id = @id");
+
+    if (contactExists.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    // Handle single update (when id is provided in params and data is an object)
+    if (id && !Array.isArray(data)) {
+      const { tax_year, noa_line_15000 } = data;
+
+      // Check if NOA income exists
+      const existingNOA = await pool.request()
+        .input("id", id)
+        .query("SELECT id FROM Contact_NOA_Income WHERE id = @id");
+
+      if (existingNOA.recordset.length === 0) {
+        return res.status(404).json({ message: "NOA Income not found" });
+      }
+
+      await pool.request()
+        .input("id", id)
+        .input("tax_year", tax_year || null)
+        .input("noa_line_15000", noa_line_15000 || null)
+        .query(`
+          UPDATE Contact_NOA_Income SET
+            tax_year = @tax_year,
+            noa_line_15000 = @noa_line_15000
+          WHERE id = @id
+        `);
+
+      // Get updated record
+      const updatedRecord = await pool.request()
+        .input("id", id)
+        .query("SELECT * FROM Contact_NOA_Income WHERE id = @id");
+
+      return res.json({ 
+        message: "NOA Income updated successfully!",
+        data: updatedRecord.recordset[0]
+      });
+    }
+
+    // Handle multiple update (when data is an array)
+    if (Array.isArray(data)) {
+      if (data.length === 0) {
+        return res.status(400).json({ message: "Array cannot be empty" });
+      }
+
+      const updatedIds = [];
+
+      for (const item of data) {
+        const { id: itemId, tax_year, noa_line_15000 } = item;
+
+        if (!itemId) {
+          continue; // Skip items without id
+        }
+
+        // Check if NOA income exists
+        const existingNOA = await pool.request()
+          .input("id", itemId)
+          .query("SELECT id FROM Contact_NOA_Income WHERE id = @id");
+
+        if (existingNOA.recordset.length === 0) {
+          continue; // Skip if not found
+        }
+
+        await pool.request()
+          .input("id", itemId)
+          .input("tax_year", tax_year || null)
+          .input("noa_line_15000", noa_line_15000 || null)
+          .query(`
+            UPDATE Contact_NOA_Income SET
+              tax_year = @tax_year,
+              noa_line_15000 = @noa_line_15000
+            WHERE id = @id
+          `);
+
+        updatedIds.push(itemId);
+      }
+
+      // Get all updated records
+      const updatedRecords = await pool.request()
+        .input("contact_id", contactId)
+        .query(`
+          SELECT * FROM Contact_NOA_Income 
+          WHERE id IN (${updatedIds.join(',')})
+          ORDER BY id DESC
+        `);
+
+      return res.json({ 
+        message: "NOA Incomes updated successfully!",
+        updatedCount: updatedIds.length,
+        data: updatedRecords.recordset
+      });
+    }
+
+    return res.status(400).json({ message: "Invalid request body" });
+  } catch (err) {
+    console.error("Update NOA Income Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Delete NOA Income
+export const deleteNOAIncome = async (req, res) => {
+  const { contactId, id } = req.params;
+  try {
+    const pool = await poolPromise;
+
+    // Check if NOA income exists
+    const existingNOA = await pool.request()
+      .input("id", id)
+      .query("SELECT id FROM Contact_NOA_Income WHERE id = @id");
+
+    if (existingNOA.recordset.length === 0) {
+      return res.status(404).json({ message: "NOA Income not found" });
+    }
+
+    await pool.request()
+      .input("id", id)
+      .query("DELETE FROM Contact_NOA_Income WHERE id = @id");
+
+    res.json({ message: "NOA Income deleted successfully!" });
+  } catch (err) {
+    console.error("Delete NOA Income Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// ==================== CRA_CONVERSATIONS ====================
+
+/**
+ * @swagger
+ * /contacts/{contactId}/conversations:
+ *   post:
+ *     summary: Create a new CRA conversation
+ *     tags: [CRA Conversations]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               cra_office_number:
+ *                 type: string
+ *               cra_agent_number:
+ *                 type: string
+ *               agent_name:
+ *                 type: string
+ *               conversation_notes:
+ *                 type: string
+ *               created_by:
+ *                 type: integer
+ *     responses:
+ *       201:
+ *         description: CRA Conversation created successfully
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Server error
+ */
+/**
+ * @swagger
+ * /contacts/{contactId}/conversations:
+ *   get:
+ *     summary: Get all CRA conversations for a contact
+ *     tags: [CRA Conversations]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of CRA conversations
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Server error
+ */
+// Create CRA Conversation
+export const createCRAConversation = async (req, res) => {
+  const { contactId } = req.params;
+  const {
+    cra_office_number,
+    cra_agent_number,
+    agent_name,
+    conversation_notes,
+    created_by
+  } = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    // Check if contact exists
+    const contactExists = await pool.request()
+      .input("id", contactId)
+      .query("SELECT id FROM Contacts WHERE id = @id");
+
+    if (contactExists.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    const userCreatedBy = req.user ? req.user.id : created_by;
+
+    await pool.request()
+      .input("contact_id", contactId)
+      .input("cra_office_number", cra_office_number || null)
+      .input("cra_agent_number", cra_agent_number || null)
+      .input("agent_name", agent_name || null)
+      .input("conversation_notes", conversation_notes || null)
+      .input("created_by", userCreatedBy || null)
+      .query(`
+        INSERT INTO CRAConversations (
+          contact_id, cra_office_number, cra_agent_number, agent_name, conversation_notes, created_by
+        ) VALUES (
+          @contact_id, @cra_office_number, @cra_agent_number, @agent_name, @conversation_notes, @created_by
+        )
+      `);
+
+    const result = await pool.request().query("SELECT SCOPE_IDENTITY() as id");
+    const conversationId = result.recordset[0].id;
+
+    res.status(201).json({ message: "CRA Conversation created successfully!", id: conversationId });
+  } catch (err) {
+    console.error("Create CRA Conversation Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Get All CRA Conversations for a Contact
+export const getAllCRAConversations = async (req, res) => {
+  const { contactId } = req.params;
+  try {
+    const pool = await poolPromise;
+
+    // Check if contact exists
+    const contactExists = await pool.request()
+      .input("id", contactId)
+      .query("SELECT id FROM Contacts WHERE id = @id");
+
+    if (contactExists.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    const result = await pool.request()
+      .input("contact_id", contactId)
+      .query("SELECT * FROM CRAConversations WHERE contact_id = @contact_id ORDER BY conversation_date DESC");
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("Get All CRA Conversations Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/**
+ * @swagger
+ * /contacts/{contactId}/conversations/{id}:
+ *   put:
+ *     summary: Update a CRA conversation
+ *     tags: [CRA Conversations]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               cra_office_number:
+ *                 type: string
+ *               cra_agent_number:
+ *                 type: string
+ *               agent_name:
+ *                 type: string
+ *               conversation_notes:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: CRA Conversation updated successfully
+ *       404:
+ *         description: CRA Conversation not found
+ *       500:
+ *         description: Server error
+ */
+/**
+ * @swagger
+ * /contacts/{contactId}/conversations/{id}:
+ *   delete:
+ *     summary: Delete a CRA conversation
+ *     tags: [CRA Conversations]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: CRA Conversation deleted successfully
+ *       404:
+ *         description: CRA Conversation not found
+ *       500:
+ *         description: Server error
+ */
+// Update CRA Conversation
+export const updateCRAConversation = async (req, res) => {
+  const { contactId, id } = req.params;
+  const {
+    cra_office_number,
+    cra_agent_number,
+    agent_name,
+    conversation_notes
+  } = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    // Check if conversation exists
+    const existingConversation = await pool.request()
+      .input("id", id)
+      .query("SELECT id FROM CRAConversations WHERE id = @id");
+
+    if (existingConversation.recordset.length === 0) {
+      return res.status(404).json({ message: "CRA Conversation not found" });
+    }
+
+    await pool.request()
+      .input("id", id)
+      .input("cra_office_number", cra_office_number || null)
+      .input("cra_agent_number", cra_agent_number || null)
+      .input("agent_name", agent_name || null)
+      .input("conversation_notes", conversation_notes || null)
+      .query(`
+        UPDATE CRAConversations SET
+          cra_office_number = @cra_office_number,
+          cra_agent_number = @cra_agent_number,
+          agent_name = @agent_name,
+          conversation_notes = @conversation_notes
+        WHERE id = @id
+      `);
+
+    res.json({ message: "CRA Conversation updated successfully!" });
+  } catch (err) {
+    console.error("Update CRA Conversation Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Delete CRA Conversation
+export const deleteCRAConversation = async (req, res) => {
+  const { contactId, id } = req.params;
+  try {
+    const pool = await poolPromise;
+
+    // Check if conversation exists
+    const existingConversation = await pool.request()
+      .input("id", id)
+      .query("SELECT id FROM CRAConversations WHERE id = @id");
+
+    if (existingConversation.recordset.length === 0) {
+      return res.status(404).json({ message: "CRA Conversation not found" });
+    }
+
+    await pool.request()
+      .input("id", id)
+      .query("DELETE FROM CRAConversations WHERE id = @id");
+
+    res.json({ message: "CRA Conversation deleted successfully!" });
+  } catch (err) {
+    console.error("Delete CRA Conversation Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// ==================== CONTACT_DOCUMENT_REQUESTS ====================
+
+/**
+ * @swagger
+ * /contacts/{contactId}/document-requests:
+ *   post:
+ *     summary: Create a new document request
+ *     tags: [Document Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               doc_id:
+ *                 type: integer
+ *               requested_by:
+ *                 type: integer
+ *               status:
+ *                 type: string
+ *               remark:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Document Request created successfully
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Server error
+ */
+/**
+ * @swagger
+ * /contacts/{contactId}/document-requests:
+ *   get:
+ *     summary: Get all document requests for a contact
+ *     tags: [Document Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of document requests
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Server error
+ */
+// Create Document Request
+// export const createDocumentRequest = async (req, res) => {
+//   const { contactId } = req.params;
+//   const {
+//     doc_id,
+//     requested_by,
+//     status,
+//     remark
+//   } = req.body;
+
+//   try {
+//     const pool = await poolPromise;
+
+//     // Check if contact exists
+//     const contactExists = await pool.request()
+//       .input("id", contactId)
+//       .query("SELECT id FROM Contacts WHERE id = @id");
+
+//     if (contactExists.recordset.length === 0) {
+//       return res.status(404).json({ message: "Contact not found" });
+//     }
+
+//     // Validate doc_id if provided
+//     if (doc_id) {
+//       const docExists = await pool.request()
+//         .input("id", doc_id)
+//         .query("SELECT doc_id FROM DocumentMaster WHERE doc_id = @id");
+//       if (docExists.recordset.length === 0) {
+//         return res.status(400).json({ message: "Document does not exist." });
+//       }
+//     }
+
+//     const requestStatus = status || 'Pending';
+
+//     await pool.request()
+//       .input("contact_id", contactId)
+//       .input("doc_id", doc_id || null)
+//       .input("requested_by", requested_by || null)
+//       .input("status", requestStatus)
+//       .input("remark", remark || null)
+//       .query(`
+//         INSERT INTO ContactDocumentRequests (
+//           contact_id, doc_id, requested_by, status, remark
+//         ) VALUES (
+//           @contact_id, @doc_id, @requested_by, @status, @remark
+//         )
+//       `);
+
+//     const result = await pool.request().query("SELECT SCOPE_IDENTITY() as id");
+//     const requestId = result.recordset[0].id;
+
+//     // Get document name for timeline note
+//     let docName = '';
+//     if (doc_id) {
+//       const docData = await pool.request()
+//         .input("id", doc_id)
+//         .query("SELECT doc_name FROM DocumentMaster WHERE doc_id = @id");
+//       if (docData.recordset.length > 0) {
+//         docName = docData.recordset[0].doc_name;
+//       }
+//     }
+
+//     // Create status timeline entry
+//     const changed_by = req.user ? req.user.id : null;
+//     const timelineNote = remark ? `Document requested: ${docName}. Remark: ${remark}` : `Document requested: ${docName}`;
+    
+//     await pool.request()
+//       .input("contact_id", contactId)
+//       .input("old_status", null)
+//       .input("new_status", requestStatus)
+//       .input("note", timelineNote)
+//       .input("changed_by", changed_by)
+//       .query(`
+//         INSERT INTO ContactStatusTimeline (contact_id, old_status, new_status, note, changed_by)
+//         VALUES (@contact_id, @old_status, @new_status, @note, @changed_by)
+//       `);
+
+//     // Get the created document request with document details
+//     const requestData = await pool.request()
+//       .input("id", requestId)
+//       .query(`
+//         SELECT cdr.*, dm.doc_name, dm.doc_type, dm.description
+//         FROM ContactDocumentRequests cdr
+//         LEFT JOIN DocumentMaster dm ON cdr.doc_id = dm.doc_id
+//         WHERE cdr.id = @id
+//       `);
+
+//     res.status(201).json({ 
+//       message: "Document Request created successfully!", 
+//       id: requestId,
+//       documentRequest: requestData.recordset[0]
+//     });
+//   } catch (err) {
+//     console.error("Create Document Request Error:", err);
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// };
+export const createDocumentRequest = async (req, res) => {
+  const { contactId } = req.params;
+  const email = req.body.email;
+  const documentRequests = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    // Check contact
+    const contactExists = await pool.request()
+      .input("id", contactId)
+      .query("SELECT id FROM Contacts WHERE id = @id");
+
+    if (contactExists.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    // Validate array
+    if (!Array.isArray(documentRequests) || documentRequests.length === 0) {
+      return res.status(400).json({ message: "Body must be a non-empty array" });
+    }
+
+    const insertedIds = [];
+
+    for (const doc of documentRequests) {
+
+      const {
+        doc_id,
+        requested_by,
+        status,
+        remark
+      } = doc;
+
+      // Validate document
+      if (doc_id) {
+        const docExists = await pool.request()
+          .input("id", doc_id)
+          .query("SELECT doc_id FROM DocumentMaster WHERE doc_id = @id");
+
+        if (docExists.recordset.length === 0) {
+          return res.status(400).json({ message: `Document ${doc_id} does not exist.` });
+        }
+      }
+
+      const requestStatus = status || "Pending";
+
+      // Insert request
+      const insertResult = await pool.request()
+        .input("contact_id", contactId)
+        .input("doc_id", doc_id)
+        .input("requested_by", requested_by)
+        .input("status", requestStatus)
+        .input("remark", remark || 'Document requested')
+        .query(`
+          INSERT INTO ContactDocumentRequests
+          (contact_id, doc_id, requested_by, status, remark)
+          OUTPUT INSERTED.id
+          VALUES
+          (@contact_id, @doc_id, @requested_by, @status, @remark)
+        `);
+
+      const requestId = insertResult.recordset[0].id;
+      insertedIds.push(requestId);
+
+      // Get document name
+      let docName = "";
+
+      if (doc_id) {
+        const docData = await pool.request()
+          .input("id", doc_id)
+          .query("SELECT doc_name FROM DocumentMaster WHERE doc_id = @id");
+
+        if (docData.recordset.length > 0) {
+          docName = docData.recordset[0].doc_name;
+        }
+      }
+
+      const changed_by = req.user ? req.user.id : null;
+
+      const timelineNote = remark
+        ? `Document requested: ${docName}. Remark: ${remark}`
+        : `Document requested: ${docName}`;
+
+      // Timeline entry
+      await pool.request()
+        .input("contact_id", contactId)
+        .input("old_status", null)
+        .input("new_status", requestStatus)
+        .input("note", timelineNote)
+        .input("changed_by", changed_by)
+        .query(`
+          INSERT INTO ContactStatusTimeline
+          (contact_id, old_status, new_status, note, changed_by)
+          VALUES
+          (@contact_id, @old_status, @new_status, @note, @changed_by)
+        `);
+    }
+
+    // Fetch inserted records
+    const records = await pool.request()
+      .query(`
+        SELECT cdr.*, dm.doc_name, dm.doc_type, dm.description
+        FROM ContactDocumentRequests cdr
+        LEFT JOIN DocumentMaster dm ON cdr.doc_id = dm.doc_id
+        WHERE cdr.id IN (${insertedIds.join(",")})
+      `);
+
+    res.status(201).json({
+      message: "Document Requests created successfully!",
+      insertedCount: insertedIds.length,
+      data: records.recordset
+    });
+
+  } catch (err) {
+    console.error("Create Document Request Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+// Get All Document Requests for a Contact
+export const getAllDocumentRequests = async (req, res) => {
+  const { contactId } = req.params;
+  try {
+    const pool = await poolPromise;
+
+    // Check if contact exists
+    const contactExists = await pool.request()
+      .input("id", contactId)
+      .query("SELECT id FROM Contacts WHERE id = @id");
+
+    if (contactExists.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    const result = await pool.request()
+      .input("contact_id", contactId)
+      .query(`
+        SELECT cdr.*, dm.doc_name, dm.doc_type, dm.description
+        FROM ContactDocumentRequests cdr
+        LEFT JOIN DocumentMaster dm ON cdr.doc_id = dm.doc_id
+        WHERE cdr.contact_id = @contact_id
+        ORDER BY cdr.request_date DESC
+      `);
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("Get All Document Requests Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/**
+ * @swagger
+ * /contacts/{contactId}/document-requests/{id}:
+ *   put:
+ *     summary: Update a document request
+ *     tags: [Document Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               requested_by:
+ *                 type: integer
+ *               document_id:
+ *                 type: integer
+ *               status:
+ *                 type: string
+ *               remark:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Document Request updated successfully
+ *       404:
+ *         description: Document Request not found
+ *       500:
+ *         description: Server error
+ */
+/**
+ * @swagger
+ * /contacts/{contactId}/document-requests/{id}:
+ *   delete:
+ *     summary: Delete a document request
+ *     tags: [Document Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Document Request deleted successfully
+ *       404:
+ *         description: Document Request not found
+ *       500:
+ *         description: Server error
+ */
+// Update Document Request
+export const updateDocumentRequest = async (req, res) => {
+  const { contactId, id } = req.params;
+  const {
+    doc_id,
+    requested_by,
+    status,
+    remark
+  } = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    // Check if document request exists
+    const existingRequest = await pool.request()
+      .input("id", id)
+      .query("SELECT * FROM ContactDocumentRequests WHERE id = @id");
+
+    if (existingRequest.recordset.length === 0) {
+      return res.status(404).json({ message: "Document Request not found" });
+    }
+
+    const oldStatus = existingRequest.recordset[0].status;
+    const oldDocId = existingRequest.recordset[0].doc_id;
+
+    // Validate doc_id if provided
+    if (doc_id) {
+      const docExists = await pool.request()
+        .input("id", doc_id)
+        .query("SELECT doc_id FROM DocumentMaster WHERE doc_id = @id");
+      if (docExists.recordset.length === 0) {
+        return res.status(400).json({ message: "Document does not exist." });
+      }
+    }
+
+    await pool.request()
+      .input("id", id)
+      .input("doc_id", doc_id !== undefined ? doc_id : oldDocId)
+      .input("requested_by", requested_by !== undefined ? requested_by : existingRequest.recordset[0].requested_by)
+      .input("status", status !== undefined ? status : existingRequest.recordset[0].status)
+      .input("remark", remark !== undefined ? remark : existingRequest.recordset[0].remark)
+      .query(`
+        UPDATE ContactDocumentRequests SET
+          doc_id = @doc_id,
+          requested_by = @requested_by,
+          status = @status,
+          remark = @remark
+        WHERE id = @id
+      `);
+
+    // Get the new status (after update)
+    const newStatus = status !== undefined ? status : existingRequest.recordset[0].status;
+
+    // Create status timeline entry if status changed from Pending to Complete or Incomplete
+    if (oldStatus === 'Pending' && (newStatus === 'Complete' || newStatus === 'Incomplete')) {
+      const changed_by = req.user ? req.user.id : null;
+      
+      // Get document name for timeline note
+      let docName = '';
+      const currentDocId = doc_id !== undefined ? doc_id : oldDocId;
+      if (currentDocId) {
+        const docData = await pool.request()
+          .input("id", currentDocId)
+          .query("SELECT doc_name FROM DocumentMaster WHERE doc_id = @id");
+        if (docData.recordset.length > 0) {
+          docName = docData.recordset[0].doc_name;
+        }
+      }
+
+      const timelineNote = remark ? `Document: ${docName}. Remark: ${remark}` : `Document: ${docName}. Status changed to ${newStatus}`;
+      
+      await pool.request()
+        .input("contact_id", contactId)
+        .input("old_status", oldStatus)
+        .input("new_status", newStatus)
+        .input("note", timelineNote)
+        .input("changed_by", changed_by)
+        .query(`
+          INSERT INTO ContactStatusTimeline (contact_id, old_status, new_status, note, changed_by)
+          VALUES (@contact_id, @old_status, @new_status, @note, @changed_by)
+        `);
+    }
+
+    // Get updated document request with document details
+    const updatedRequest = await pool.request()
+      .input("id", id)
+      .query(`
+        SELECT cdr.*, dm.doc_name, dm.doc_type, dm.description
+        FROM ContactDocumentRequests cdr
+        LEFT JOIN DocumentMaster dm ON cdr.doc_id = dm.doc_id
+        WHERE cdr.id = @id
+      `);
+
+    res.json({ 
+      message: "Document Request updated successfully!",
+      documentRequest: updatedRequest.recordset[0]
+    });
+  } catch (err) {
+    console.error("Update Document Request Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Delete Document Request
+export const deleteDocumentRequest = async (req, res) => {
+  const { contactId, id } = req.params;
+  try {
+    const pool = await poolPromise;
+
+    // Check if document request exists
+    const existingRequest = await pool.request()
+      .input("id", id)
+      .query("SELECT id FROM ContactDocumentRequests WHERE id = @id");
+
+    if (existingRequest.recordset.length === 0) {
+      return res.status(404).json({ message: "Document Request not found" });
+    }
+
+    await pool.request()
+      .input("id", id)
+      .query("DELETE FROM ContactDocumentRequests WHERE id = @id");
+
+    res.json({ message: "Document Request deleted successfully!" });
+  } catch (err) {
+    console.error("Delete Document Request Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// ==================== CONTACT_DOCUMENTS ====================
+
+/**
+ * @swagger
+ * /contacts/{contactId}/documents:
+ *   post:
+ *     summary: Create a new contact document
+ *     tags: [Contact Documents]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               request_id:
+ *                 type: integer
+ *               document_name:
+ *                 type: string
+ *               file_path:
+ *                 type: string
+ *               uploaded_by:
+ *                 type: integer
+ *     responses:
+ *       201:
+ *         description: Contact Document created successfully
+ *       400:
+ *         description: Document Request does not exist
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Server error
+ */
+/**
+ * @swagger
+ * /contacts/{contactId}/documents:
+ *   get:
+ *     summary: Get all documents for a contact
+ *     tags: [Contact Documents]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of contact documents
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Server error
+ */
+// Create Document
+export const createContactDocument = async (req, res) => {
+  const { contactId } = req.params;
+  const {
+    request_id,
+    doc_id,
+    file_path,
+    uploaded_by
+  } = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    // Check if contact exists
+    const contactExists = await pool.request()
+      .input("id", contactId)
+      .query("SELECT id FROM Contacts WHERE id = @id");
+
+    if (contactExists.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    // Validate request_id if provided
+    if (request_id) {
+      const requestExists = await pool.request()
+        .input("id", request_id)
+        .query("SELECT id FROM ContactDocumentRequests WHERE id = @id");
+      if (requestExists.recordset.length === 0) {
+        return res.status(400).json({ message: "Document Request does not exist." });
+      }
+    }
+
+    // Validate doc_id if provided
+    if (doc_id) {
+      const docExists = await pool.request()
+        .input("id", doc_id)
+        .query("SELECT doc_id FROM DocumentMaster WHERE doc_id = @id");
+      if (docExists.recordset.length === 0) {
+        return res.status(400).json({ message: "Document does not exist." });
+      }
+    }
+
+    const userUploadedBy = req.user ? req.user.id : uploaded_by;
+
+    await pool.request()
+      .input("contact_id", contactId)
+      .input("request_id", request_id || null)
+      .input("doc_id", doc_id || null)
+      .input("file_path", file_path || null)
+      .input("uploaded_by", userUploadedBy || null)
+      .query(`
+        INSERT INTO ContactDocuments (
+          contact_id, request_id, doc_id, file_path, uploaded_by
+        ) VALUES (
+          @contact_id, @request_id, @doc_id, @file_path, @uploaded_by
+        )
+      `);
+
+    const result = await pool.request().query("SELECT SCOPE_IDENTITY() as id");
+    const documentId = result.recordset[0].id;
+
+    // Get created document with document details
+    const documentData = await pool.request()
+      .input("id", documentId)
+      .query(`
+        SELECT cd.*, dm.doc_name, dm.doc_type, dm.description
+        FROM ContactDocuments cd
+        LEFT JOIN DocumentMaster dm ON cd.doc_id = dm.doc_id
+        WHERE cd.id = @id
+      `);
+
+    res.status(201).json({ 
+      message: "Contact Document created successfully!", 
+      id: documentId,
+      document: documentData.recordset[0]
+    });
+  } catch (err) {
+    console.error("Create Contact Document Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Get All Documents for a Contact
+export const getAllContactDocuments = async (req, res) => {
+  const { contactId } = req.params;
+  try {
+    const pool = await poolPromise;
+
+    // Check if contact exists
+    const contactExists = await pool.request()
+      .input("id", contactId)
+      .query("SELECT id FROM Contacts WHERE id = @id");
+
+    if (contactExists.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    const result = await pool.request()
+      .input("contact_id", contactId)
+      .query(`
+        SELECT cd.*, dm.doc_name, dm.doc_type, dm.description
+        FROM ContactDocuments cd
+        LEFT JOIN DocumentMaster dm ON cd.doc_id = dm.doc_id
+        WHERE cd.contact_id = @contact_id
+        ORDER BY cd.uploaded_date DESC
+      `);
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("Get All Contact Documents Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/**
+ * @swagger
+ * /contacts/{contactId}/documents/{id}:
+ *   put:
+ *     summary: Update a contact document
+ *     tags: [Contact Documents]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               request_id:
+ *                 type: integer
+ *               document_name:
+ *                 type: string
+ *               file_path:
+ *                 type: string
+ *               uploaded_by:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Contact Document updated successfully
+ *       400:
+ *         description: Document Request does not exist
+ *       404:
+ *         description: Contact Document not found
+ *       500:
+ *         description: Server error
+ */
+/**
+ * @swagger
+ * /contacts/{contactId}/documents/{id}:
+ *   delete:
+ *     summary: Delete a contact document
+ *     tags: [Contact Documents]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Contact Document deleted successfully
+ *       404:
+ *         description: Contact Document not found
+ *       500:
+ *         description: Server error
+ */
+// Update Contact Document
+export const updateContactDocument = async (req, res) => {
+  const { contactId, id } = req.params;
+  const {
+    request_id,
+    doc_id,
+    file_path,
+    uploaded_by
+  } = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    // Check if document exists
+    const existingDocument = await pool.request()
+      .input("id", id)
+      .query("SELECT * FROM ContactDocuments WHERE id = @id");
+
+    if (existingDocument.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact Document not found" });
+    }
+
+    const oldDoc = existingDocument.recordset[0];
+
+    // Validate request_id if provided
+    if (request_id) {
+      const requestExists = await pool.request()
+        .input("id", request_id)
+        .query("SELECT id FROM ContactDocumentRequests WHERE id = @id");
+      if (requestExists.recordset.length === 0) {
+        return res.status(400).json({ message: "Document Request does not exist." });
+      }
+    }
+
+    // Validate doc_id if provided
+    if (doc_id) {
+      const docExists = await pool.request()
+        .input("id", doc_id)
+        .query("SELECT doc_id FROM DocumentMaster WHERE doc_id = @id");
+      if (docExists.recordset.length === 0) {
+        return res.status(400).json({ message: "Document does not exist." });
+      }
+    }
+
+    await pool.request()
+      .input("id", id)
+      .input("request_id", request_id !== undefined ? request_id : oldDoc.request_id)
+      .input("doc_id", doc_id !== undefined ? doc_id : oldDoc.doc_id)
+      .input("file_path", file_path !== undefined ? file_path : oldDoc.file_path)
+      .input("uploaded_by", uploaded_by !== undefined ? uploaded_by : oldDoc.uploaded_by)
+      .query(`
+        UPDATE ContactDocuments SET
+          request_id = @request_id,
+          doc_id = @doc_id,
+          file_path = @file_path,
+          uploaded_by = @uploaded_by
+        WHERE id = @id
+      `);
+
+    // Get updated document with document details
+    const updatedDocument = await pool.request()
+      .input("id", id)
+      .query(`
+        SELECT cd.*, dm.doc_name, dm.doc_type, dm.description
+        FROM ContactDocuments cd
+        LEFT JOIN DocumentMaster dm ON cd.doc_id = dm.doc_id
+        WHERE cd.id = @id
+      `);
+
+    res.json({ 
+      message: "Contact Document updated successfully!",
+      document: updatedDocument.recordset[0]
+    });
+  } catch (err) {
+    console.error("Update Contact Document Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Delete Contact Document
+export const deleteContactDocument = async (req, res) => {
+  const { contactId, id } = req.params;
+  try {
+    const pool = await poolPromise;
+
+    // Check if document exists
+    const existingDocument = await pool.request()
+      .input("id", id)
+      .query("SELECT id FROM ContactDocuments WHERE id = @id");
+
+    if (existingDocument.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact Document not found" });
+    }
+
+    await pool.request()
+      .input("id", id)
+      .query("DELETE FROM ContactDocuments WHERE id = @id");
+
+    res.json({ message: "Contact Document deleted successfully!" });
+  } catch (err) {
+    console.error("Delete Contact Document Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// ==================== CONTACT_STATUS_TIMELINE ====================
+
+/**
+ * @swagger
+ * /contacts/{contactId}/status-timeline:
+ *   post:
+ *     summary: Create a new status timeline entry
+ *     tags: [Contact Status Timeline]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               old_status:
+ *                 type: string
+ *               new_status:
+ *                 type: string
+ *               note:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Status Timeline created successfully
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Server error
+ */
+/**
+ * @swagger
+ * /contacts/{contactId}/status-timeline:
+ *   get:
+ *     summary: Get status timeline for a contact
+ *     tags: [Contact Status Timeline]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: contactId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of status timeline entries
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Server error
+ */
+// Create Status Timeline Entry
+export const createStatusTimeline = async (req, res) => {
+  const { contactId } = req.params;
+  const {
+    old_status,
+    new_status,
+    note
+  } = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    // Check if contact exists
+    const contactExists = await pool.request()
+      .input("id", contactId)
+      .query("SELECT id FROM Contacts WHERE id = @id");
+
+    if (contactExists.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    const changed_by = req.user ? req.user.id : null;
+
+    await pool.request()
+      .input("contact_id", contactId)
+      .input("old_status", old_status || null)
+      .input("new_status", new_status || null)
+      .input("note", note || null)
+      .input("changed_by", changed_by)
+      .query(`
+        INSERT INTO ContactStatusTimeline (
+          contact_id, old_status, new_status, note, changed_by
+        ) VALUES (
+          @contact_id, @old_status, @new_status, @note, @changed_by
+        )
+      `);
+
+    const result = await pool.request().query("SELECT SCOPE_IDENTITY() as id");
+    const timelineId = result.recordset[0].id;
+
+    res.status(201).json({ message: "Status Timeline created successfully!", id: timelineId });
+  } catch (err) {
+    console.error("Create Status Timeline Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Get Status Timeline for a Contact
+export const getStatusTimeline = async (req, res) => {
+  const { contactId } = req.params;
+  try {
+    const pool = await poolPromise;
+
+    // Check if contact exists
+    const contactExists = await pool.request()
+      .input("id", contactId)
+      .query("SELECT id FROM Contacts WHERE id = @id");
+
+    if (contactExists.recordset.length === 0) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    const result = await pool.request()
+      .input("contact_id", contactId)
+      .query("SELECT * FROM ContactStatusTimeline WHERE contact_id = @contact_id ORDER BY changed_at DESC");
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("Get Status Timeline Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import axios from "axios";
+import { poolPromise } from "../config/db.js";
+import nodemailer from "nodemailer";
+
+export const sendLeadEmail = async (activityId, subject, body) => {
+  try {
+    const pool = await poolPromise;
+
+    // Fetch email + lead info
+    const result = await pool.request().query(`
+      SELECT L.email
+      FROM LeadActivityLog A
+      JOIN Leads L ON L.id = A.lead_id
+      WHERE A.id = ${activityId}
+    `);
+
+    if (!result.recordset.length) {
+      throw new Error("Lead not found for email");
+    }
+
+    const toEmail = result.recordset[0].email;
+
+    // Call Email API
+    const response = await axios.post(
+      process.env.EMAIL_API_URL,
+      {
+        to: toEmail,
+        subject,
+        html: body
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.EMAIL_API_KEY}`
+        }
+      }
+    );
+
+    // Update Activity Log → SUCCESS
+    await pool.request().query(`
+      UPDATE LeadActivityLog
+      SET api_status='success',
+          email_to='${toEmail}',
+          email_subject='${subject}',
+          email_status='sent',
+          response_payload='${JSON.stringify(response.data)}'
+      WHERE id=${activityId}
+    `);
+
+  } catch (error) {
+    const pool = await poolPromise;
+
+    await pool.request().query(`
+      UPDATE LeadActivityLog
+      SET api_status='failed',
+          email_status='failed',
+          api_message='${error.message}'
+      WHERE id=${activityId}
+    `);
+  }
+};
+
+/**
+ * Send email to customer with all pending document requests + newly created ones
+ * @param {number} contactId - Contact ID
+ * @param {array} newRequestIds - IDs of newly created requests
+ * @param {string} template - Custom HTML template from request
+ */
+export const sendDocumentsEmail = async (contactId, newRequestIds, template) => {
+  try {
+    const pool = await poolPromise;
+
+    // Fetch contact email
+    const contactResult = await pool.request()
+      .input('contactId', contactId)
+      .query('SELECT email, client_name FROM Contacts WHERE id = @contactId');
+
+    if (contactResult.recordset.length === 0) {
+      console.log('Contact not found for email:', contactId);
+      return;
+    }
+
+    const { email: toEmail, client_name } = contactResult.recordset[0];
+    if (!toEmail) {
+      console.log('No email for contact:', contactId);
+      return;
+    }
+
+    // Fetch ALL pending requests + new ones for this contact
+    const pendingStatus = "'Pending'";
+    const newIdsList = newRequestIds.length > 0 ? newRequestIds.join(',') : '0';
+    const requestsResult = await pool.request()
+      .input('contactId', contactId)
+      .input('newIds', newIdsList)
+      .query(`
+        SELECT DISTINCT cdr.id, cdr.status, cdr.remark, cdr.request_date,
+               dm.doc_name, dm.doc_type, dm.description,
+               cd.file_path
+        FROM ContactDocumentRequests cdr
+        LEFT JOIN DocumentMaster dm ON cdr.doc_id = dm.doc_id
+        LEFT JOIN ContactDocuments cd ON cd.doc_id = cdr.doc_id AND cd.contact_id = cdr.contact_id
+        WHERE cdr.contact_id = @contactId 
+          AND (cdr.status = ${pendingStatus} OR cdr.id IN (${newIdsList}))
+        ORDER BY cdr.request_date DESC
+      `);
+
+    const documents = requestsResult.recordset;
+
+    if (documents.length === 0) {
+      console.log('No documents to email for contact:', contactId);
+      return;
+    }
+
+    // Create transporter (Gmail config - assumes EMAIL_USER, EMAIL_PASS in .env)
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.hostinger.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    // Prepare attachments (only if file_path exists)
+    const attachments = documents
+      .filter(doc => doc.file_path)
+      .map(doc => ({
+        filename: doc.doc_name || `document_${doc.id}.pdf`,
+        path: doc.file_path,
+        contentType: 'application/pdf'
+      }));
+
+    // Default template if none provided
+    let emailTemplate = template || `
+      <h2>Hi ${client_name || 'Customer'},</h2>
+      <p>Here are your document requests update:</p>
+      <table border="1" style="border-collapse: collapse; width: 100%;">
+        <tr><th>Document</th><th>Type</th><th>Status</th><th>Date</th><th>Remark</th></tr>
+        ${documents.map(doc => `
+          <tr>
+            <td>${doc.doc_name || 'N/A'}</td>
+            <td>${doc.doc_type || 'N/A'}</td>
+            <td><strong>${doc.status}</strong></td>
+            <td>${new Date(doc.request_date).toLocaleDateString()}</td>
+            <td>${doc.remark || 'N/A'}</td>
+          </tr>
+        `).join('')}
+      </table>
+      ${attachments.length > 0 ? `<p>Attached: ${attachments.length} document(s)</p>` : ''}
+      <p>Thank you!</p>
+    `;
+
+    // Send email
+    const info = await transporter.sendMail({
+      from: `"CRM System" <${process.env.EMAIL_USER}>`,
+      to: toEmail,
+      subject: 'Your Document Requests - Pending Items & Updates',
+      html: emailTemplate,
+      attachments
+    });
+
+    console.log('Documents email sent:', info.messageId, 'to', toEmail);
+
+  } catch (error) {
+    console.error('Failed to send documents email:', error);
+  }
+};
+
+
+
+
+
+
+Contact Agreement Status Values
+Pending
+Sent
+Viewed
+Signed
+Declined
+Expired

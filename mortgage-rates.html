@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Current Mortgage Rates | Mortgage Minds</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+
+        .rates-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .rates-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .rates-table th {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        .rates-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .rate-value {
+            font-weight: 700;
+        }
+
+        .loader {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .nav-tabs .nav-link {
+            font-weight: 600;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container mt-5">
+
+        <div class="text-center mb-4">
+            <h2>New Zealand Mortgage Rates</h2>
+            <p>Latest mortgage rates from major New Zealand lenders</p>
+        </div>
+
+        <div class="rates-card">
+
+            <!-- Tabs -->
+            <ul class="nav nav-tabs mb-4 justify-content-center" id="ratesTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="lenders-tab" data-bs-toggle="tab"
+                        data-bs-target="#lenders-tab-pane" type="button" role="tab" aria-controls="lenders-tab-pane"
+                        aria-selected="true">🏦 Lenders</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="bank-tab" data-bs-toggle="tab" data-bs-target="#bank-tab-pane"
+                        type="button" role="tab" aria-controls="bank-tab-pane" aria-selected="false">🏛️ Bank Options</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="kiwi-tab" data-bs-toggle="tab" data-bs-target="#kiwi-tab-pane"
+                        type="button" role="tab" aria-controls="kiwi-tab-pane" aria-selected="false">🇳🇿 Kiwi Owned Banks</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="nonbank-tab" data-bs-toggle="tab" data-bs-target="#nonbank-tab-pane"
+                        type="button" role="tab" aria-controls="nonbank-tab-pane" aria-selected="false">🏢 Non-Bank
+                        Lenders</button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="ratesTabContent">
+
+                <!-- Lenders Tab -->
+                <div class="tab-pane fade show active" id="lenders-tab-pane" role="tabpanel"
+                    aria-labelledby="lenders-tab">
+                    <div class="table-responsive">
+                        <table class="rates-table table">
+                            <thead>
+                                <tr>
+                                    <th>Lender</th>
+                                    <th>Floating</th>
+                                    <th>6 Months</th>
+                                    <th>1 Year</th>
+                                    <th>2 Years</th>
+                                    <th>3 Years</th>
+                                    <th>4 Years</th>
+                                    <th>5 Years</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lendersTable">
+                                <tr>
+                                    <td colspan="8" class="loader">Loading mortgage rates...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Bank Options Tab -->
+                <div class="tab-pane fade" id="bank-tab-pane" role="tabpanel" aria-labelledby="bank-tab">
+                    <div class="table-responsive">
+                        <table class="rates-table table">
+                            <thead>
+                                <tr>
+                                    <th>Lender</th>
+                                    <th>Floating</th>
+                                    <th>6 Months</th>
+                                    <th>1 Year</th>
+                                    <th>2 Years</th>
+                                    <th>3 Years</th>
+                                    <th>4 Years</th>
+                                    <th>5 Years</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bankTable">
+                                <tr>
+                                    <td colspan="8" class="loader">Loading mortgage rates...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Kiwi Owned Banks Tab -->
+                <div class="tab-pane fade" id="kiwi-tab-pane" role="tabpanel" aria-labelledby="kiwi-tab">
+                    <div class="table-responsive">
+                        <table class="rates-table table">
+                            <thead>
+                                <tr>
+                                    <th>Lender</th>
+                                    <th>Floating</th>
+                                    <th>6 Months</th>
+                                    <th>1 Year</th>
+                                    <th>2 Years</th>
+                                    <th>3 Years</th>
+                                    <th>4 Years</th>
+                                    <th>5 Years</th>
+                                </tr>
+                            </thead>
+                            <tbody id="kiwiTable">
+                                <tr>
+                                    <td colspan="8" class="loader">Loading mortgage rates...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Non-Bank Lenders Tab -->
+                <div class="tab-pane fade" id="nonbank-tab-pane" role="tabpanel" aria-labelledby="nonbank-tab">
+                    <div class="table-responsive">
+                        <table class="rates-table table">
+                            <thead>
+                                <tr>
+                                    <th>Lender</th>
+                                    <th>Floating</th>
+                                    <th>6 Months</th>
+                                    <th>1 Year</th>
+                                    <th>2 Years</th>
+                                    <th>3 Years</th>
+                                    <th>4 Years</th>
+                                    <th>5 Years</th>
+                                </tr>
+                            </thead>
+                            <tbody id="nonbankTable">
+                                <tr>
+                                    <td colspan="8" class="loader">Loading mortgage rates...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const kiwiBanks = ["Co-operative Bank", "Heartland Bank", "Kiwibank", "TSB Bank", "SBS Bank"];
+        const nonBankLenders = ["Liberty", "Resimac", "Bluestone"];
+        const lenders = ["Co-operative Bank", "Heartland Bank", "Kiwibank", "ANZ", "ASB", "BNZ", "TSB Bank", "SBS Bank", "Westpac", "Avanti Finance", "Liberty", "Pepper Money"];
+        const bankOptions = ["ANZ", "ASB", "BNZ", "Westpac"]
+        function extractRates(lender) {
+            let rates = {
+                "variable floating": "-",
+                "6 months": "-",
+                "1 year": "-",
+                "2 years": "-",
+                "3 years": "-",
+                "4 years": "-",
+                "5 years": "-"
+            };
+
+            lender.products.forEach(product => {
+                product.rates.forEach(rate => {
+                    let term = rate.term.toLowerCase();
+                    if (term === "variable floating") rates["variable floating"] = rate.rate + "%";
+                    if (term === "6 months") rates["6 months"] = rate.rate + "%";
+                    if (term === "1 year") rates["1 year"] = rate.rate + "%";
+                    if (term === "2 years") rates["2 years"] = rate.rate + "%";
+                    if (term === "3 years") rates["3 years"] = rate.rate + "%";
+                    if (term === "4 years") rates["4 years"] = rate.rate + "%";
+                    if (term === "5 years") rates["5 years"] = rate.rate + "%";
+                });
+            });
+
+            return rates;
+        }
+
+        function createRow(name, rates) {
+            return `
+<tr>
+<td><strong>${name}</strong></td>
+<td class="rate-value">${rates["variable floating"]}</td>
+<td class="rate-value">${rates["6 months"]}</td>
+<td class="rate-value">${rates["1 year"]}</td>
+<td class="rate-value">${rates["2 years"]}</td>
+<td class="rate-value">${rates["3 years"]}</td>
+<td class="rate-value">${rates["4 years"]}</td>
+<td class="rate-value">${rates["5 years"]}</td>
+</tr>`;
+        }
+
+        async function loadRates() {
+            try {
+                const res = await fetch("https://ratesapi.nz/api/v1/mortgage-rates");
+                const data = await res.json();
+
+                const lendersBody = document.getElementById("lendersTable");
+                const bankBody = document.getElementById("bankTable");
+                const kiwiBody = document.getElementById("kiwiTable");
+                const nonBankBody = document.getElementById("nonbankTable");
+
+                lendersBody.innerHTML = "";
+                bankBody.innerHTML = "";
+                kiwiBody.innerHTML = "";
+                nonBankBody.innerHTML = "";
+
+                data.data.forEach(lender => {
+                    const rates = extractRates(lender);
+                    const row = createRow(lender.name, rates);
+
+                    lendersBody.innerHTML += row;
+
+                    if (kiwiBanks.includes(lender.name)) {
+                        kiwiBody.innerHTML += row;
+                    } else if (nonBankLenders.includes(lender.name)) {
+                        nonBankBody.innerHTML += row;
+                    } else {
+                        bankBody.innerHTML += row;
+                    }
+                });
+
+            } catch (err) {
+                console.error(err);
+                const tables = ["lendersTable", "bankTable", "kiwiTable", "nonbankTable"];
+                tables.forEach(id => {
+                    document.getElementById(id).innerHTML = `<tr><td colspan="8" class="loader">Failed to load rates</td></tr>`;
+                });
+            }
+        }
+
+        loadRates();
+    </script>
+
+</body>
+
+</html>
+
+
+
+{
+                    "id": "product:bnz:standard",
+                    "name": "Standard",
+                    "rates": [
+                        {
+                            "id": "rate:bnz:standard:variable-floating",
+                            "rate": 5.84,
+                            "term": "Variable floating",
+                            "termInMonths": null
+                        },
+                        {
+                            "id": "rate:bnz:standard:6-months",
+                            "rate": 4.49,
+                            "term": "6 months",
+                            "termInMonths": 6
+                        },
+                        {
+                            "id": "rate:bnz:standard:1-year",
+                            "rate": 4.49,
+                            "term": "1 year",
+                            "termInMonths": 12
+                        },
+                        {
+                            "id": "rate:bnz:standard:18-months",
+                            "rate": 4.64,
+                            "term": "18 months",
+                            "termInMonths": 18
+                        },
+                        {
+                            "id": "rate:bnz:standard:2-years",
+                            "rate": 4.69,
+                            "term": "2 years",
+                            "termInMonths": 24
+                        },
+                        {
+                            "id": "rate:bnz:standard:3-years",
+                            "rate": 4.99,
+                            "term": "3 years",
+                            "termInMonths": 36
+                        },
+                        {
+                            "id": "rate:bnz:standard:4-years",
+                            "rate": 5.19,
+                            "term": "4 years",
+                            "termInMonths": 48
+                        },
+                        {
+                            "id": "rate:bnz:standard:5-years",
+                            "rate": 5.29,
+                            "term": "5 years",
+                            "termInMonths": 60
+                        }
+                    ]
+                },
