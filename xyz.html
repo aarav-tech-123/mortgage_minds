@@ -2360,3 +2360,790 @@ Viewed
 Signed
 Declined
 Expired
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import axios from "axios";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { poolPromise } from "../config/db.js";
+
+const SIGNNOW_BASE = "https://api.signnow.com";
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = "uploads/agreements";
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `agreement_${Date.now()}${path.extname(file.originalname)}`);
+  }
+});
+// GET TOKEN
+const getSignNowToken = async () => {
+  const response = await axios.post(`${SIGNNOW_BASE}/oauth2/token`, {
+    username: process.env.SIGNNOW_EMAIL,
+    password: process.env.SIGNNOW_PASSWORD,
+    grant_type: "password"
+  });
+
+  console.log("SignNow Token Response:", response);
+
+  return response.data.access_token;
+};
+
+
+
+// SEND AGREEMENT WITH PREFILLED DATA
+/**
+ * @swagger
+ * /agreement/agreements:
+ *   get:
+ *     summary: Get all active agreements
+ *     tags: [Agreements]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of active agreements
+ */
+export const getAllAgreements = async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request().query(`
+      SELECT TOP 1000 * FROM [CRM].[dbo].[AgreementMaster] 
+      WHERE is_active = 1 
+      ORDER BY created_at DESC
+    `);
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("Get All Agreements Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/**
+ * @swagger
+ * /agreement/agreements/{id}:
+ *   get:
+ *     summary: Get agreement by ID
+ *     tags: [Agreements]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Agreement details
+ *       404:
+ *         description: Agreement not found
+ */
+export const getAgreementById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("id", id)
+      .query("SELECT * FROM [CRM].[dbo].[AgreementMaster] WHERE id = @id");
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: "Agreement not found" });
+    }
+
+    res.json(result.recordset[0]);
+  } catch (err) {
+    console.error("Get Agreement By ID Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/**
+ * @swagger
+ * /agreement/agreements:
+ *   post:
+ *     summary: Create a new agreement
+ *     tags: [Agreements]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               agreement_name:
+ *                 type: string
+ *               signnow_template_id:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               is_active:
+ *                 type: boolean
+ *                 default: true
+ *     responses:
+ *       201:
+ *         description: Agreement created
+ */
+export const createAgreement = async (req, res) => {
+  const {
+    agreement_name,
+    signnow_template_id,
+    description,
+    is_active = true
+  } = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    const result = await pool.request()
+      .input("agreement_name", agreement_name)
+      .input("signnow_template_id", signnow_template_id || null)
+      .input("description", description || null)
+      .input("is_active", is_active)
+      .query(`
+        INSERT INTO [CRM].[dbo].[AgreementMaster] 
+        (agreement_name, signnow_template_id, description, is_active)
+        OUTPUT INSERTED.*
+        VALUES (@agreement_name, @signnow_template_id, @description, @is_active)
+      `);
+
+    res.status(201).json({
+      message: "Agreement created successfully!",
+      agreement: result.recordset[0]
+    });
+  } catch (err) {
+    console.error("Create Agreement Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/**
+ * @swagger
+ * /agreement/agreements/{id}:
+ *   put:
+ *     summary: Update agreement by ID
+ *     tags: [Agreements]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               agreement_name:
+ *                 type: string
+ *               signnow_template_id:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               is_active:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Agreement updated
+ */
+export const updateAgreement = async (req, res) => {
+  const { id } = req.params;
+  const {
+    agreement_name,
+    signnow_template_id,
+    description,
+    is_active
+  } = req.body;
+
+  try {
+    const pool = await poolPromise;
+
+    // Check exists
+    const existing = await pool.request()
+      .input("id", id)
+      .query("SELECT * FROM [CRM].[dbo].[AgreementMaster] WHERE id = @id");
+
+    if (existing.recordset.length === 0) {
+      return res.status(404).json({ message: "Agreement not found" });
+    }
+
+    await pool.request()
+      .input("id", id)
+      .input("agreement_name", agreement_name || existing.recordset[0].agreement_name)
+      .input("signnow_template_id", signnow_template_id !== undefined ? signnow_template_id : existing.recordset[0].signnow_template_id)
+      .input("description", description || existing.recordset[0].description)
+      .input("is_active", is_active !== undefined ? is_active : existing.recordset[0].is_active)
+      .query(`
+        UPDATE [CRM].[dbo].[AgreementMaster] SET
+          agreement_name = @agreement_name,
+          signnow_template_id = @signnow_template_id,
+          description = @description,
+          is_active = @is_active
+        WHERE id = @id
+      `);
+
+    res.json({ message: "Agreement updated successfully!" });
+  } catch (err) {
+    console.error("Update Agreement Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/**
+ * @swagger
+ * /agreement/agreements/{id}:
+ *   delete:
+ *     summary: Delete agreement by ID (hard delete)
+ *     tags: [Agreements]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Agreement deleted
+ */
+export const deleteAgreement = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const pool = await poolPromise;
+
+    const existing = await pool.request()
+      .input("id", id)
+      .query("SELECT id FROM [CRM].[dbo].[AgreementMaster] WHERE id = @id");
+
+    if (existing.recordset.length === 0) {
+      return res.status(404).json({ message: "Agreement not found" });
+    }
+
+    await pool.request()
+      .input("id", id)
+      .query("DELETE FROM [CRM].[dbo].[AgreementMaster] WHERE id = @id");
+
+    res.json({ message: "Agreement deleted successfully!" });
+  } catch (err) {
+    console.error("Delete Agreement Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+
+export const sendAgreementWithPrefill = async (req, res) => {
+  try {
+    const { contact_id, agreement_id } = req.body;
+
+    const pool = await poolPromise;
+
+    // FETCH CONTACT
+    const contactRes = await pool.request()
+      .input("contact_id", contact_id)
+      .query(`
+        SELECT id, client_name, email, contact_number, tax_debt_amount, status, 
+               sin_number, business_number, upfront_assessment_fee,
+               client_type, business_name
+        FROM Contacts
+        WHERE id = @contact_id
+      `);
+
+    if (!contactRes.recordset.length) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+
+    const contact = contactRes.recordset[0];
+
+    // FETCH PAYMENT STRUCTURES
+    const paymentsRes = await pool.request()
+      .input("contact_id", contact_id)
+      .query(`
+        SELECT amount, payment_date, sr_no 
+        FROM [CRM].[dbo].[PaymentStructure] 
+        WHERE contact_id = @contact_id AND is_active = 1 
+        ORDER BY ISNULL(sr_no, id) ASC
+      `);
+    const payments = paymentsRes.recordset;
+
+    if (!contact.email) {
+      return res.status(400).json({ message: "Contact email missing" });
+    }
+
+    // Fetch template_id from AgreementMaster
+    const agreementRes = await pool.request()
+      .input("agreement_id", agreement_id)
+      .query("SELECT signnow_template_id AS template_id FROM [CRM].[dbo].[AgreementMaster] WHERE id = @agreement_id");
+
+    if (!agreementRes.recordset.length) {
+      return res.status(404).json({ message: "Agreement not found" });
+    }
+
+    const template_id = agreementRes.recordset[0].template_id;
+    if (!template_id) {
+      return res.status(400).json({ message: "No SignNow template ID found for this agreement" });
+    }
+
+    const token = process.env.SIGNNOW_TOKEN;
+
+    // STEP 1: CREATE DOCUMENT FROM TEMPLATE
+    const docRes = await axios.post(
+      `${SIGNNOW_BASE}/template/${template_id}/copy`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const document_id = docRes.data.id;
+    console.log("Created document:", document_id);
+
+    // STEP 2: FETCH DOCUMENT TO GET ACTUAL FIELD IDs
+    const docDetailRes = await axios.get(
+      `${SIGNNOW_BASE}/document/${document_id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const fields = docDetailRes.data.fields || [];
+
+    // STEP 3: BUILD PREFILL MAP
+    const isIndividual = contact.client_type?.toLowerCase() === "individual";
+    const isBusiness = contact.client_type?.toLowerCase() === "business";
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const nameParts = (contact.client_name || "").trim().split(/\s+/);
+    const firstName = nameParts[0] || "N/A";
+    const lastName = nameParts.slice(1).join(" ") || "N/A";
+
+    const prefillMap = {
+      // Always filled
+      "agreement_date": today,
+      "agreement_date_2": today,
+      "agreement_date_3": today,
+      "agreement_date_4": today,
+      "client_name_2": contact.client_name,
+      "client_name_4": contact.client_name,
+      "client_name_5": contact.client_name,
+      "client_phone_1": String(contact.contact_number),
+      "client_phone_2": String(contact.contact_number),
+      "client_phone_3": String(contact.contact_number),
+      "client_email_1": contact.email,
+      "client_email_2": contact.email,
+      "upfront_fee": String(contact.upfront_assessment_fee),
+      "total_fee": "70000",
+      "noins": "5",
+      "toin": "5",
+      "rein": "4",
+      "client_address": "Kanpur Nagar",
+      "client_fname": isIndividual ? firstName : "N/A",
+      "client_lname": isIndividual ? lastName : "N/A",
+      "sin_2": isIndividual ? String(contact.sin_number) : "N/A",
+
+      // Individual-only fields
+      "client_name_1": isIndividual ? contact.client_name : "N/A",
+      "sin": isIndividual ? String(contact.sin_number) : "N/A",
+      "personal_debt": isIndividual ? String(contact.tax_debt_amount) : "N/A",
+
+      // Business-only fields
+      "business_name": isBusiness ? contact.business_name : "N/A",
+      "business_number": isBusiness ? String(contact.business_number) : "N/A",
+      "client_name_3": isBusiness ? contact.client_name : "N/A",
+      "business_debt": isBusiness ? String(contact.tax_debt_amount) : "N/A",
+
+      // Payment structure fields (payment_1 to payment_8)
+    };
+
+    // Add payment data dynamically
+    let paymentIndex = 1;
+    payments.forEach(payment => {
+      prefillMap[`payment_${paymentIndex}`] = payment.amount ? `$${parseFloat(payment.amount).toLocaleString()}` : "NA";
+      prefillMap[`payment_date_${paymentIndex}`] = payment.payment_date ? new Date(payment.payment_date).toLocaleDateString('en-CA') : "NA";
+      paymentIndex++;
+    });
+
+    // Fill remaining up to 8 with NA
+    while (paymentIndex <= 8) {
+      prefillMap[`payment_${paymentIndex}`] = "NA";
+      prefillMap[`payment_date_${paymentIndex}`] = "NA";
+      paymentIndex++;
+    }
+
+    // STEP 4: MAP FIELDS — skip signature fields, only process text fields
+
+    const signatureFields = fields
+      .filter(f => f.type === "signature")
+      .map(f => ({
+        id: f.id,
+        type: f.type,
+        role_id: f.role_id,
+        role: f.role,
+        x: f.json_attributes.x,
+        y: f.json_attributes.y,
+        width: f.json_attributes.width,
+        height: f.json_attributes.height,
+        page_number: f.json_attributes.page_number,
+        required: true,   // ENFORCE REQUIRED
+        name: f.json_attributes.name,
+      }));
+
+    const prefillFields = fields
+      .filter(f =>
+        f.type === "text" &&
+        prefillMap[f.json_attributes?.name] !== undefined
+      )
+      .map(f => ({
+        id: f.id,
+        type: f.type,
+        role_id: f.role_id,
+        role: f.role,
+        x: f.json_attributes.x,
+        y: f.json_attributes.y,
+        width: f.json_attributes.width,
+        height: f.json_attributes.height,
+        page_number: f.json_attributes.page_number,
+        required: f.json_attributes.required,
+        name: f.json_attributes.name,
+        label: f.json_attributes.label || f.json_attributes.name,
+        bold: f.json_attributes.bold,
+        italic: f.json_attributes.italic,
+        underline: f.json_attributes.underline,
+        align: f.json_attributes.align,
+        font: f.json_attributes.font,
+        size: f.json_attributes.size,
+        font_size: f.json_attributes.font_size,
+        lock_to_sign_prefill: f.json_attributes.lock_to_sign_prefill ?? true,
+        prefilled_text: prefillMap[f.json_attributes.name],
+      }));
+
+
+    const checkboxFields = fields
+      .filter(f => f.type === "checkbox")
+      .map(f => ({
+        id: f.id,
+        type: f.type,
+        role_id: f.role_id,
+        role: f.role,
+        x: f.json_attributes.x,
+        y: f.json_attributes.y,
+        width: f.json_attributes.width,
+        height: f.json_attributes.height,
+        page_number: f.json_attributes.page_number,
+        required: f.json_attributes.required ?? true,
+        name: f.json_attributes.name,
+      }));
+
+
+    const allFields = [...prefillFields, ...signatureFields, ...checkboxFields];
+
+    // console.log("Total fields in PUT:", allFields.length);
+    // console.log("Signature fields:", JSON.stringify(signatureFields, null, 2));
+
+
+    if (!prefillFields.length) {
+      return res.status(400).json({ message: "No fields matched — check field names in template" });
+    }
+
+    // STEP 5: APPLY PREFILL
+    await axios.put(
+      `${SIGNNOW_BASE}/document/${document_id}`,
+      { fields: allFields },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    // console.log("Prefill applied successfully");
+
+    // STEP 6: SEND INVITE
+    const ROLE_NAME = "ae5a390c26bd4a5bbb2ab6802844ac2d282c39dd";
+
+    const invitePayload = {
+      to: [
+        {
+          email: contact.email,
+          role_id: ROLE_NAME,
+          order: 1
+        }
+      ],
+      subject: "",
+      message: "",
+      from: process.env.SIGNNOW_EMAIL
+    };
+
+    const inviteRes = await axios.post(
+      `${SIGNNOW_BASE}/document/${document_id}/invite`,
+      invitePayload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    console.log("Invite sent:", JSON.stringify(inviteRes.data, null, 2));
+
+    // STEP 7: SAVE IN DB
+    await pool.request()
+      .input("contact_id", contact_id)
+      .input("agreement_id", agreement_id)
+      .input("doc_id", document_id)
+      .query(`
+        INSERT INTO ContactAgreements
+        (contact_id, agreement_id, signnow_document_id, status, sent_date)
+        VALUES (@contact_id, @agreement_id, @doc_id, 'Sent', GETDATE())
+      `);
+
+    // STEP 8: TIMELINE
+    await pool.request()
+      .input("contact_id", contact_id)
+      .input("old_status", contact.status || "Unknown")
+      .input("new_status", "Agreement Sent")
+      .input("note", "Agreement sent via SignNow")
+      .query(`
+        INSERT INTO ContactStatusTimeline
+        (contact_id, old_status, new_status, note)
+        VALUES (@contact_id, @old_status, @new_status, @note)
+      `);
+
+    // STEP 9: UPDATE CONTACT STATUS
+    await pool.request()
+      .input("id", contact_id)
+      .input("status", "Agreement Sent")
+      .query(`UPDATE Contacts SET status = @status WHERE id = @id`);
+
+    res.json({
+      message: "Agreement sent successfully",
+      document_id,
+      invite_response: inviteRes.data
+    });
+
+  } catch (error) {
+    console.error("SignNow Error:", error.response?.data || error.message);
+    res.status(500).json({
+      message: "Failed to send agreement",
+      error: error.response?.data || error.message
+    });
+  }
+};
+
+
+export const handleSignNowWebhook = async (req, res) => {
+  try {
+    // Acknowledge immediately so SignNow doesn't retry
+    res.status(200).json({ received: true });
+
+    const event = req.body;
+    console.log("SignNow webhook received:", JSON.stringify(event, null, 2));
+
+    // Only process document completion events
+    if (event.event !== "document.complete") return;
+
+    const document_id = event.data?.document_id || event.data?.id;
+    if (!document_id) return;
+
+    const token = process.env.SIGNNOW_TOKEN;
+
+    // CHECK IF THIS DOCUMENT EXISTS IN OUR DB
+    const pool = await poolPromise;
+    const agreementRes = await pool.request()
+      .input("doc_id", document_id)
+      .query(`
+        SELECT id FROM ContactAgreements 
+        WHERE signnow_document_id = @doc_id
+      `);
+
+    if (!agreementRes.recordset.length) {
+      console.log("Document not found in DB:", document_id);
+      return;
+    }
+
+    // DOWNLOAD SIGNED DOCUMENT FROM SIGNNOW
+    const downloadRes = await axios.get(
+      `${SIGNNOW_BASE}/document/${document_id}/download`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: "arraybuffer"
+      }
+    );
+
+    // SAVE TO SERVER
+    const dir = "uploads/agreements";
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+    const filename = `agreement_${document_id}_${Date.now()}.pdf`;
+    const filepath = path.join(dir, filename);
+    fs.writeFileSync(filepath, downloadRes.data);
+
+    console.log("Signed document saved:", filepath);
+
+    // UPDATE DB WITH SIGNING LINK AND DATE
+    await pool.request()
+      .input("doc_id", document_id)
+      .input("signing_link", filepath)
+      .input("signed_date", new Date())
+      .input("status", "Signed")
+      .query(`
+        UPDATE ContactAgreements 
+        SET signing_link = @signing_link,
+            signed_date  = @signed_date,
+            status       = @status
+        WHERE signnow_document_id = @doc_id
+      `);
+
+    console.log("DB updated with signed document info");
+
+  } catch (error) {
+    console.error("Webhook error:", error.response?.data || error.message);
+  }
+};
+
+
+// Add Checkbox,                                                                   Done
+// Payment Structure,                                                              Done
+// Webhook test and document store in db,                                          Test After Deployment
+// agreement_id fetch from AgreementMaster and store in ContactAgreements table    Done
+
+
+
+
+
+
+
+
+
+
+
+
