@@ -8,7 +8,7 @@
     <meta name="description" content="Mortgage Repayment Calculator | Mortgage Minds NZ">
     <title>Mortgage Calculators | Mortgage Minds</title>
     <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
-   <!-- ========== Start Stylesheet ========== -->
+    <!-- ========== Start Stylesheet ========== -->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/css/font-awesome.min.css" rel="stylesheet">
     <link href="assets/css/magnific-popup.css" rel="stylesheet">
@@ -20,12 +20,389 @@
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <!-- ========== End Stylesheet ========== -->
-
+     <style>
+        /* ── Global Styles Override for Calculator Section Only ── */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* ── Premium Hero Section ── */
+        .calc-hero {
+            background: radial-gradient(circle at 10% 20%, #0a2a3b 0%, #051a2a 100%);
+            padding: 140px 0 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+        }
+        
+        .calc-hero::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(91,184,245,0.15) 0%, rgba(91,184,245,0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+        
+        .calc-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -5%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(91,184,245,0.08) 0%, rgba(91,184,245,0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+        
+        .calc-hero .container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .calc-hero .tag {
+            display: inline-block;
+            background: rgba(91, 184, 245, 0.2);
+            backdrop-filter: blur(4px);
+            color: #7bc9ff;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 6px 20px;
+            border-radius: 40px;
+            margin-bottom: 1.8rem;
+            border: 1px solid rgba(91,184,245,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .calc-hero h1 {
+            color: #ffffff;
+            font-size: 3.2rem;
+            font-weight: 700;
+            margin: 0 0 1.5rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #FFFFFF 0%, #c0e0ff 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        
+        .calc-hero h1 span {
+            background: linear-gradient(135deg, #5bb8f5, #9ed6ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+        
+        .calc-hero p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.2rem;
+            max-width: 680px;
+            margin: 0 auto;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+        
+        /* ── Glassmorphic Info Cards ── */
+        .calc-info-area {
+            background: #f6f9fe;
+            padding: 80px 0 70px;
+            position: relative;
+        }
+        
+        .calc-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .calc-info-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(2px);
+            border-radius: 28px;
+            padding: 32px 28px;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(91, 184, 245, 0.2);
+            box-shadow: 0 12px 28px -8px rgba(0, 32, 64, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .calc-info-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #1e6eb5, #5bb8f5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .calc-info-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(91, 184, 245, 0.5);
+            box-shadow: 0 20px 32px -12px rgba(0, 52, 89, 0.15);
+        }
+        
+        .calc-info-card:hover::after {
+            opacity: 1;
+        }
+        
+        .calc-info-card .icon-wrap {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            background: linear-gradient(145deg, #eef5fc, #e1ecf5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 22px;
+            transition: all 0.3s;
+            color: #1a6eb5;
+        }
+        
+        .calc-info-card:hover .icon-wrap {
+            background: linear-gradient(145deg, #1a6eb5, #0f4d7a);
+            color: white;
+            transform: scale(1.02);
+        }
+        
+        .calc-info-card .icon-wrap svg {
+            width: 26px;
+            height: 26px;
+            stroke-width: 1.7;
+        }
+        
+        .calc-info-card h5 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #102b3f;
+            margin: 0 0 14px;
+            letter-spacing: -0.3px;
+        }
+        
+        .calc-info-card p {
+            font-size: 0.95rem;
+            color: #4b5e6f;
+            line-height: 1.65;
+            margin: 0;
+        }
+        
+        /* ── Dual Calculator Section (Side by Side, No Tabs) ── */
+        .calc-dual-area {
+            padding: 80px 0 90px;
+            background: linear-gradient(145deg, #ffffff 0%, #fafcff 100%);
+            position: relative;
+        }
+        
+        .calc-dual-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+        
+        .calc-dual-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(125deg, #102b3f, #236b9b);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 12px;
+        }
+        
+        .calc-dual-header p {
+            color: #5a6e7f;
+            font-size: 1.1rem;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Two Column Grid for Calculators */
+        .calculators-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            align-items: stretch;
+        }
+        
+        .calculator-card {
+            background: #ffffff;
+            border-radius: 40px;
+            transition: all 0.35s ease;
+            border: 1px solid rgba(91, 184, 245, 0.2);
+            box-shadow: 0 20px 35px -12px rgba(0, 32, 64, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(2px);
+        }
+        
+        .calculator-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(91, 184, 245, 0.5);
+            box-shadow: 0 28px 40px -16px rgba(26, 110, 181, 0.2);
+        }
+        
+        .card-header-gradient {
+            padding: 28px 32px 20px;
+            background: linear-gradient(115deg, #f8fbfe 0%, #ffffff 100%);
+            border-bottom: 2px solid #eef2fa;
+        }
+        
+        .card-icon-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .card-icon-badge {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #1e6eb5, #0f5a8a);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 16px -6px rgba(26, 110, 181, 0.25);
+        }
+        
+        .card-icon-badge svg {
+            width: 28px;
+            height: 28px;
+            stroke: white;
+            stroke-width: 1.7;
+        }
+        
+        .card-header-gradient h3 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #102b3f;
+            margin: 0;
+            letter-spacing: -0.4px;
+        }
+        
+        .card-header-gradient p {
+            font-size: 0.9rem;
+            color: #5f7f96;
+            margin: 12px 0 0 0;
+            line-height: 1.5;
+        }
+        
+        .calculator-iframe-container {
+            padding: 8px 24px 16px 24px;
+            flex: 1;
+            background: #ffffff;
+        }
+        
+        .calculator-iframe-container iframe {
+            width: 100%;
+            border: none;
+            border-radius: 24px;
+            background: #fff;
+            transition: all 0.2s;
+            display: block;
+        }
+        
+        .card-footer-note {
+            background: #f9fdfe;
+            padding: 20px 28px 24px;
+            border-top: 1px solid #eef2f6;
+            margin-top: auto;
+        }
+        
+        .card-footer-note p {
+            font-size: 0.8rem;
+            color: #4b6a82;
+            margin: 0;
+            line-height: 1.55;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+        
+        .card-footer-note strong {
+            color: #1a6eb5;
+            font-weight: 600;
+        }
+        
+        .note-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        /* responsiveness */
+        @media (max-width: 991px) {
+            .calc-info-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .calc-hero h1 {
+                font-size: 2.4rem;
+            }
+            .calculators-row {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+            .card-header-gradient {
+                padding: 24px 24px 16px;
+            }
+            .calculator-iframe-container {
+                padding: 8px 20px 16px;
+            }
+            .card-footer-note {
+                padding: 18px 24px;
+            }
+        }
+        
+        @media (max-width: 550px) {
+            .calculator-iframe-container iframe {
+                min-height: 540px !important;
+            }
+            .card-icon-title {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+        
+        /* subtle fade in animation */
+        @keyframes gentleFadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .calc-info-card, .calculator-card {
+            animation: gentleFadeUp 0.6s ease backwards;
+        }
+        .calc-info-card:nth-child(1) { animation-delay: 0.05s; }
+        .calc-info-card:nth-child(2) { animation-delay: 0.15s; }
+        .calc-info-card:nth-child(3) { animation-delay: 0.25s; }
+        .calculator-card:first-child { animation-delay: 0.1s; }
+        .calculator-card:last-child { animation-delay: 0.2s; }
+    </style>
 </head>
 
 <body class="color-style-two">
 
-    
+
     <!-- Header -->
     <header>
         <nav class="navbar mobile-sidenav navbar-style-one navbar-sticky validnavs white navbar-fixed no-background">
@@ -42,7 +419,8 @@
                 <div class="row align-items-center">
                     <div class="col-xxl-2 col-md-2 col-sm-1 col-1">
                         <div class="navbar-header">
-                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                                data-target="#navbar-menu">
                                 <i class="fa fa-bars"></i>
                             </button>
                             <a class="navbar-brand" href="index.html">
@@ -53,7 +431,8 @@
                     <div class="col-xxl-6 offset-xxl-1 col-lg-7 col-md-4 col-sm-4 col-4">
                         <div class="collapse navbar-collapse" id="navbar-menu">
                             <img src="assets/img/logo.png" alt="Logo">
-                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                                data-target="#navbar-menu">
                                 <i class="fa fa-times"></i>
                             </button>
                             <ul class="nav navbar-nav navbar-center" data-in="fadeInDown" data-out="fadeOutUp">
@@ -84,7 +463,9 @@
                                             </div>
                                             <div class="info">
                                                 <p>Have any Questions?</p>
-                                                <h5><a href="mailto:nilesh@mortgageminds.co.nz">nilesh@mortgageminds.co.nz</a></h5>
+                                                <h5><a
+                                                        href="mailto:nilesh@mortgageminds.co.nz">nilesh@mortgageminds.co.nz</a>
+                                                </h5>
                                             </div>
                                         </div>
                                     </li>
@@ -104,8 +485,10 @@
     <section class="calc-hero">
         <div class="container" style="position: relative; z-index: 1;">
             <span class="tag">Free Tools</span>
-            <h1>Calculate Your <span>Mortgage Repayments</span></h1>
-            <p>Before you start searching for your first home, upgrade, or next investment property — know exactly how much you could repay and how much you can save by paying off your mortgage a little faster.</p>
+            <h1>Calculate your <span> </span>mortgage repayments</h1>
+            <p>Before you start searching your first home, upgrade, or even your next investment property, it would be a
+                good idea to know how much you could repay, and how much you can save by simply paying off your mortgage
+                a bit faster.</p>
         </div>
     </section>
     <!-- End Hero -->
@@ -118,26 +501,52 @@
 
                 <div class="calc-info-card">
                     <div class="icon-wrap">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2" />
+                            <line x1="8" y1="21" x2="16" y2="21" />
+                            <line x1="12" y1="17" x2="12" y2="21" />
+                        </svg>
                     </div>
-                    <h5>Using Our Calculator</h5>
-                    <p>Enter your loan amount and the repayment period — up to 30 years. Click calculate to see your weekly, fortnightly, and monthly repayments, plus the total amount you'll pay including interest.</p>
+                    <h5>Using our mortgage repayment calculator</h5>
+                    <p>
+                        Enter the amount of your loan and the time period in which you believe you will be able to pay
+                        the loan- the longest most banks will agree to is 30 years. Click calculate - you will see how
+                        much you will pay per week, every fortnight and month with an approximation of how much you will
+                        pay in total, including the interest.
+                    </p>
                 </div>
 
                 <div class="calc-info-card">
                     <div class="icon-wrap">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                            <polyline points="17 6 23 6 23 12" />
+                        </svg>
                     </div>
                     <h5>Compare Home Loans</h5>
-                    <p>Easily compare various home loans by filling in your details to see how much interest you'd pay or save. See how rate changes affect your repayments so you can plan with confidence.</p>
+                    <p>
+                        You can easily compare various home loans through this calculator. Just fill in your information
+                        and you will get how much interest you are paying and saving. You can also find out how you
+                        could be impacted by a decrease or increase in interest rates - this is the reason you will be
+                        confident that you will still afford to repay your mortgage debts even in case interest rates
+                        increase sharply.
+                    </p>
                 </div>
 
                 <div class="calc-info-card">
                     <div class="icon-wrap">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
                     </div>
                     <h5>Get the Actual Figures</h5>
-                    <p>Get a solid idea of what you can afford and take the next step. Our mortgage advisers will look at your personal circumstances and aspirations to find you the best possible loan structure.</p>
+                    <p>With this calculator, you will have a great idea of what you can afford, which will allow you to
+                        have you dream home buying goals achieved. The second step will be to meet with our professional
+                        financial advisers who will consider your present circumstances and your aspirations.</p>
                 </div>
 
             </div>
@@ -147,101 +556,111 @@
 
 
     <!-- Calculator Tabs -->
-    <section class="calc-tab-area">
+    <!-- Dual Calculator Section: Side by Side, No Tabs (Beautiful One Row) -->
+    <section class="calc-dual-area">
         <div class="container">
-
-            <div class="calc-tab-header">
-                <h2>Choose Your Calculator</h2>
-                <p>Select the tool that best suits what you'd like to work out.</p>
+            <div class="calc-dual-header">
+                <h2>Mortgage Tools at a Glance</h2>
+                <p>Choose the right calculator — compare repayment estimates or discover the ideal loan term. Both tools
+                    are designed to help you make smarter financial decisions.</p>
             </div>
 
-            <!-- Tab Nav -->
-            <div class="calc-tabs-nav">
-                <button class="calc-tab-btn active" onclick="switchTab('repayment', this)" style="background: none !important;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                    Repayment Calculator
-                </button>
-                <button class="calc-tab-btn" onclick="switchTab('term', this)" style="background: none !important;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    Loan Term Calculator
-                </button>
-            </div>
-
-            <!-- Repayment Panel -->
-            <div class="calc-panel active" id="panel-repayment">
-                <div class="calc-panel-inner">
-                    <div class="calc-panel-top">
-                        <div class="calc-panel-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                        </div>
-                        <div class="calc-panel-text">
+            <div class="calculators-row">
+                <!-- Repayment Calculator Card -->
+                <div class="calculator-card">
+                    <div class="card-header-gradient">
+                        <div class="card-icon-title">
+                            <div class="card-icon-badge">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="1" x2="12" y2="23" />
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                </svg>
+                            </div>
                             <h3>Repayment Calculator</h3>
-                            <p>Enter your loan amount, interest rate, and term to calculate your weekly, fortnightly, and monthly repayment amounts — plus your total interest paid over the life of the loan.</p>
                         </div>
+                        <p>Enter your loan amount, interest rate, and term to instantly calculate weekly, fortnightly,
+                            and monthly repayments — plus total interest paid over the life of the loan.</p>
                     </div>
-
-                    <div class="calc-iframe-wrap">
+                    <div class="calculator-iframe-container">
                         <iframe
                             src="https://infinity.gettrail.com/Calculator/Repayment/7fd0e001-484f-4dad-bf89-c24c7fb937f2"
-                            style="width: 100%; max-width: 760px; min-height: 600px;">
+                            style="min-height: 620px; width: 100%; border-radius: 20px;" loading="lazy">
                         </iframe>
                     </div>
-
-                    <div class="calc-note">
-                        <p><strong>Note:</strong> All figures are based on the assumption that inputs remain constant and are valid only at the time of entry. Calculated on a table-repayments term loan. Actual repayment amounts may vary slightly due to rounding or individual lender terms and conditions. Mortgage repayment is calculated assuming the stated interest rate remains constant throughout the loan period.</p>
+                    <div class="card-footer-note">
+                        <p><span class="note-icon">📘</span> <strong>Disclaimer:</strong> Figures assume constant inputs
+                            and are valid at time of entry. Calculated on a table-repayments term loan. Actual amounts
+                            may vary by lender. Interest rate assumed constant.</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- Loan Term Panel -->
-            <div class="calc-panel" id="panel-term">
-                <div class="calc-panel-inner">
-                    <div class="calc-panel-top">
-                        <div class="calc-panel-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                        </div>
-                        <div class="calc-panel-text">
+                <!-- Loan Term Calculator Card -->
+                <div class="calculator-card">
+                    <div class="card-header-gradient">
+                        <div class="card-icon-title">
+                            <div class="card-icon-badge">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                            </div>
                             <h3>Loan Term Calculator</h3>
-                            <p>Find out how long it will take to pay off your mortgage based on your current repayment amount — and see how paying a little more each period can save you years off your loan and thousands in interest.</p>
                         </div>
+                        <p>Find out how long it will take to pay off your mortgage based on your current repayment
+                            amount — and see how paying a little more each period can save you years and thousands in
+                            interest.</p>
                     </div>
-
-                    <div class="calc-iframe-wrap">
-                        <iframe
-                            src="https://infinity.gettrail.com/Calculator/Term/7fd0e001-484f-4dad-bf89-c24c7fb937f2"
-                            style="width: 100%; max-width: 800px; min-height: 700px;">
+                    <div class="calculator-iframe-container">
+                        <iframe src="https://infinity.gettrail.com/Calculator/Term/7fd0e001-484f-4dad-bf89-c24c7fb937f2"
+                            style="min-height: 670px; width: 100%; border-radius: 20px;" loading="lazy">
                         </iframe>
                     </div>
-
-                    <div class="calc-note">
-                        <p><strong>Note:</strong> All figures are based on the assumption that inputs remain constant and are valid only at the time of entry. Calculated on a table-repayments term loan. Actual repayment amounts may vary slightly due to rounding or individual lender terms and conditions. Mortgage repayment is calculated assuming the stated interest rate remains constant throughout the loan period.</p>
+                    <div class="card-footer-note">
+                        <p><span class="note-icon">⏱️</span> <strong>Term insight:</strong> Estimates are based on
+                            constant interest rates and regular repayments. Results are indicative — actual term length
+                            may vary based on lender policies and rate changes.</p>
                     </div>
                 </div>
             </div>
-
         </div>
     </section>
+    <!-- End Dual Calculator Section (Beautiful One Row, No Tabs) -->
     <!-- End Calculator Tabs -->
 
 
     <!-- CTA Strip -->
-    <section class="calc-cta-strip">
+    <!-- <section class="calc-cta-strip">
         <div class="container" style="position: relative; z-index: 1;">
             <h3>Ready to Get <span>Started?</span></h3>
-            <p>Speak with a Mortgage Minds adviser who will consider your present circumstances and aspirations to find the right mortgage for you.</p>
+            <p>Speak with a Mortgage Minds adviser who will consider your present circumstances and aspirations to find
+                the right mortgage for you.</p>
             <div class="calc-cta-btns">
-                <a href="contact.html" class="cta-primary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    Speak with an Adviser
-                </a>
-                <a href="tel:+6408004521 05" class="cta-secondary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg>
-                    +64 0800 452 105
-                </a>
+                
             </div>
         </div>
-    </section>
+    </section> -->
     <!-- End CTA Strip -->
+
+
+    <!-- Start Emergency Call
+    ============================================= -->
+    <div class="newsletter-area bg-theme text-light" style="background-image: url(assets/img/shape/4.png);">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-4">
+                    <div class="newsletter-subscribe">
+                        <h3><i class="fas fa-user-headset"></i> Let's Make a Call</h3>
+                        <a href="tel:+4733378901">+64 0800 452 105</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Emergency Call -->
 
 
     <!-- Footer -->
@@ -254,7 +673,8 @@
                             <div class="logo">
                                 <img src="assets/img/logo.png" alt="Logo">
                             </div>
-                            <p>Mortgage Minds helps people in New Zealand choose the perfect mortgage by giving them expert guidance and a wide range of loan options.</p>
+                            <p>Mortgage Minds helps people in New Zealand choose the perfect mortgage by giving them
+                                expert guidance and a wide range of loan options.</p>
                             <div class="opening-hours">
                                 <h5>Opening Hours</h5>
                                 <ul class="opening-list">
@@ -298,7 +718,8 @@
                             <ul>
                                 <li>
                                     <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
-                                    <div class="content">Mortgage Minds Limited 1/10 Salford Crescent, Flatbush, Auckland 2019</div>
+                                    <div class="content">Mortgage Minds Limited 1/10 Salford Crescent, Flatbush,
+                                        Auckland 2019</div>
                                 </li>
                                 <li>
                                     <div class="icon"><i class="fas fa-phone"></i></div>
@@ -306,7 +727,9 @@
                                 </li>
                                 <li>
                                     <div class="icon"><i class="fas fa-envelope"></i></div>
-                                    <div class="content"><a href="mailto:nilesh@mortgageminds.co.nz">nilesh@mortgageminds.co.nz</a></div>
+                                    <div class="content"><a
+                                            href="mailto:nilesh@mortgageminds.co.nz">nilesh@mortgageminds.co.nz</a>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -356,10 +779,10 @@
 
     <script>
         function switchTab(tab, btn) {
-            document.querySelectorAll('.calc-panel').forEach(function(p) {
+            document.querySelectorAll('.calc-panel').forEach(function (p) {
                 p.classList.remove('active');
             });
-            document.querySelectorAll('.calc-tab-btn').forEach(function(b) {
+            document.querySelectorAll('.calc-tab-btn').forEach(function (b) {
                 b.classList.remove('active');
             });
             document.getElementById('panel-' + tab).classList.add('active');
@@ -370,4 +793,5 @@
     </script>
 
 </body>
+
 </html>
