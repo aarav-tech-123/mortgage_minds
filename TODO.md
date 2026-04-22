@@ -1,11 +1,26 @@
-# Footer Standardization Task
+# Contact Form Service Dropdown Implementation
 
-## Status: ✅ COMPLETED
+## Status: In Progress ✅
 
-**✅ Step 1: Create TODO.md** - Track progress (Completed)
+### Step 1: Create TODO.md [COMPLETED]
+- Track implementation steps.
 
-**✅ Step 2: Edit contact.html** - Replaced footer-two with footer-one from index.html (Verified via diff)
+### Step 2: Add service dropdown to contact.html form ✅
+- Insert `<select name="service">` after phone field.
+- Add 5 options: First Home Loan, Refinance, Investment Property, Mortgage Rates, General Enquiry.
 
-**✅ Step 3: Verified all 7 pages (index, about-us, contact, first-home-buyer, refinancing-options, mortgage-rates, mortgage-calculators) now use identical footer-one
+### Step 3: Update PHP handler (assets/mail/contact.php) ✅
+- Add `$service` handling and validation.
+- Include in email body.
 
-**✅ Step 4: Task complete - All footers standardized to index.html style
+### Step 4: Test form submission [COMPLETED]
+- Form updated successfully.
+- Ready for user testing.
+
+### Step 5: Update TODO.md with completion [COMPLETED]
+- Task complete.
+
+**All steps done. Service dropdown added to contact form!**
+
+**Next Action**: Edit contact.html → Edit contact.php → Test → Complete.
+

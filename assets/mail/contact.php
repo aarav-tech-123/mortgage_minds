@@ -14,6 +14,8 @@ $name     = $_POST['name'];
 $email    = $_POST['email'];
 $phone     = $_POST['phone'];
 $comments = $_POST['comments'];
+$service = $_POST['service'] ?? 'Not specified';
+$service = stripslashes($service);
 
 if (trim($name) == '') {
 	echo '<div class="alert alert-error">You must enter your name.</div>';
@@ -26,6 +28,9 @@ if (trim($name) == '') {
 	exit();
 } else if (trim($phone) == '') {
 	echo '<div class="alert alert-error">Please fill all fields!</div>';
+	exit();
+if (trim($service) == '') {
+	echo '<div class="alert alert-error">Please select a service.</div>';
 	exit();
 } else if (trim($comments) == '') {
 	echo '<div class="alert alert-error">You must enter your comments</div>';
@@ -55,7 +60,7 @@ $e_subject = 'Contact Form';
 // You can change this if you feel that you need to.
 // Developers, you may wish to add more fields to the form, in which case you must be sure to add them here.
 
-$e_body = "You have been contacted by $name, their additional message is as follows." . PHP_EOL . PHP_EOL;
+$e_body = "You have been contacted by $name (Service: $service), their additional message is as follows." . PHP_EOL . PHP_EOL;
 $e_content = "\"$comments\"" . PHP_EOL . PHP_EOL;
 $e_reply = "You can contact $name via email: $email or phone: $phone";
 
