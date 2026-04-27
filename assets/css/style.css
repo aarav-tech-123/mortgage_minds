@@ -8899,7 +8899,7 @@ form.quote-style-one .form-group input {
 	font-family: var(--font-optional);
 	margin-bottom: 120px;
 	gap: 15px;
-	animation: slide-left 50s linear infinite;
+	animation: slide-left 30s linear infinite;
 }
 
 .bg-half-bottom-light {
