@@ -1,26 +1,24 @@
-# Contact Form Service Dropdown Implementation
+# Property Investment Page Update - TODO
 
-## Status: In Progress ✅
+## Current Status
+- [x] Analyzed existing files (property-investment.html, refinance-mortgage.html)
+- [x] Created detailed update plan
+- [x] User approved plan ✅
 
-### Step 1: Create TODO.md [COMPLETED]
-- Track implementation steps.
+## Implementation Steps
+- [ ] 1. Create TODO.md (IN PROGRESS)
+- [ ] 2. Update property-investment.html content
+  - [ ] Banner section
+  - [ ] About sections (2)
+  - [ ] Services section
+  - [ ] Fun Factor section
+  - [ ] Lending Process section (6 steps)
+  - [ ] Why Mortgage Minds section
+  - [ ] FAQ section (5 questions)
+  - [ ] CTA section
+  - [ ] Fix navigation link
+- [ ] 3. Verify images load correctly
+- [ ] 4. Test responsive design
+- [ ] 5. Mark complete & cleanup TODO.md
 
-### Step 2: Add service dropdown to contact.html form ✅
-- Insert `<select name="service">` after phone field.
-- Add 5 options: First Home Loan, Refinance, Investment Property, Mortgage Rates, General Enquiry.
-
-### Step 3: Update PHP handler (assets/mail/contact.php) ✅
-- Add `$service` handling and validation.
-- Include in email body.
-
-### Step 4: Test form submission [COMPLETED]
-- Form updated successfully.
-- Ready for user testing.
-
-### Step 5: Update TODO.md with completion [COMPLETED]
-- Task complete.
-
-**All steps done. Service dropdown added to contact form!**
-
-**Next Action**: Edit contact.html → Edit contact.php → Test → Complete.
-
+**Next Step:** Update property-investment.html content
