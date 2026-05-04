@@ -13544,7 +13544,7 @@ footer.footer-two {
 .bg-dark .feature-style-two:hover::after,
 .bg-dark .active .feature-style-two::after {
 	background: var(--color-primary);
-	opacity: 0.8;
+	/* opacity: 0.8; */
 }
 
 .bg-dark .feature-style-two {
