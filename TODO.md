@@ -1,7 +1,14 @@
-# Terms-Conditions.html Creation TODO
+# TODO
 
-- [x] Step 1: Create TODO.md (current)
-- [x] Step 2: Overwrite terms-conditions.html with full new content (header from index.html + breadcrumb banner + formatted terms content + footer from index.html + scripts)
-  - [x] Step 3: Verify file created successfully
-  - [x] Step 4: Suggest preview command and complete task
+- [x] Plan approval: redesign the “Key Benefits of Life Insurance Protection” section in `life-insurance.html` with an image + modern card/grid UI.
+
+- [x] Implement HTML/CSS changes:
+
+  - [ ] Replace the current h2/p/ul block with a two-column layout (image + benefits cards).
+  - [ ] Add 4 benefit cards (icon + title + short description) using existing styling patterns.
+  - [ ] Add any required CSS in `style.css` for the new section.
+- [x] Quick verification:
+
+  - [ ] Ensure assets path is correct and no broken classes.
+  - [ ] Check responsiveness on mobile.
 
