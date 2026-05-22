@@ -1,0 +1,10 @@
+User-agent: *
+
+Allow: /
+
+Disallow: /content.php
+Disallow: /[0-9]/
+Disallow: /tag/
+Disallow: /feed/
+
+Sitemap: https://mortgageminds.co.nz/sitemap.xml
