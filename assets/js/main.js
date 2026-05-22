@@ -11,7 +11,7 @@
 	$(document).ready(function() {
 
 		/* ==================================================
-		    # Tooltip Init
+		# Tooltip Init
 		===============================================*/
 		$('[data-toggle="tooltip"]').tooltip();
 
