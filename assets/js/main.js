@@ -4,7 +4,78 @@
     Template Name   : Urane - Insurance Company HTML Template 
     Version         : 1.0
     
-* ================================================================= */
+================================================================= */
+/* ==================================================
+    # Insurance Inner Submenu - Arrow Click Only
+    # Submenu opens only when arrow is clicked
+    # Insurance Services link remains functional
+================================================== */
+function initInsuranceArrowSubmenu() {
+    var $insuranceSubmenu = $('.dropdown-submenu.insurance-submenu-item');
+    
+    if (!$insuranceSubmenu.length) return;
+    
+    var $arrowTrigger = $insuranceSubmenu.find('.submenu-arrow-trigger');
+    var $submenu = $insuranceSubmenu.find('.insurance-inner-submenu');
+    var $mainLink = $insuranceSubmenu.find('.insurance-main-link');
+    
+    // Initially hide submenu
+    $submenu.hide();
+    
+    // Toggle submenu when arrow is clicked
+    $arrowTrigger.on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Close other open submenus
+        $('.dropdown-submenu.insurance-submenu-item').not($insuranceSubmenu).removeClass('open');
+        $('.dropdown-submenu.insurance-submenu-item').not($insuranceSubmenu).find('.insurance-inner-submenu').slideUp(200);
+        
+        // Toggle current submenu
+        if ($insuranceSubmenu.hasClass('open')) {
+            $insuranceSubmenu.removeClass('open');
+            $submenu.slideUp(200);
+        } else {
+            $insuranceSubmenu.addClass('open');
+            $submenu.slideDown(200);
+        }
+    });
+    
+    // Main link remains functional - no interference
+    // It will navigate to insurance-services.html normally
+    
+    // Close submenu when clicking outside
+    $(document).on('click', function(e) {
+        if (!$insuranceSubmenu.is(e.target) && 
+            $insuranceSubmenu.has(e.target).length === 0) {
+            if ($insuranceSubmenu.hasClass('open')) {
+                $insuranceSubmenu.removeClass('open');
+                $submenu.slideUp(200);
+            }
+        }
+    });
+    
+    // Prevent submenu from closing when clicking inside it
+    $submenu.on('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    // Handle window resize - reset open states
+    $(window).on('resize', function() {
+        if ($insuranceSubmenu.hasClass('open')) {
+            $insuranceSubmenu.removeClass('open');
+            $submenu.hide();
+        }
+    });
+    
+    // For mobile - ensure proper touch behavior
+    if ('ontouchstart' in window) {
+        $arrowTrigger.on('touchstart', function(e) {
+            e.stopPropagation();
+        });
+    }
+}
+
 (function($) {
 	"use strict";
 
@@ -612,6 +683,9 @@
 				return false;
 			});
 		});
+		
+
+		initInsuranceArrowSubmenu();
 
 	}); // end document ready function
 

@@ -3454,6 +3454,159 @@ nav.navbar.validnavs.navbar-style-two .navbar-header .logo-display {
 		border-bottom-right-radius: 10px;
 	}
 }
+/* ============================================================== 
+    # Insurance Inner Submenu Styles (Arrow Click Only)
+=================================================================== */
+
+/* Submenu parent positioning */
+.dropdown-submenu {
+    position: relative;
+}	
+
+/* Wrapper for link and arrow */
+.submenu-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 20px;
+    cursor: pointer;
+}
+
+.submenu-wrapper .insurance-main-link {
+    flex: 1;
+    text-decoration: none;
+    color: #1e2a3e;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+}
+
+.submenu-wrapper .insurance-main-link:hover {
+    color: var(--color-primary, #0056b3);
+    background: transparent;
+}
+
+.submenu-arrow-trigger {
+    margin-left: 15px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    transition: all 0.25s ease;
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.submenu-arrow-trigger i {
+    font-size: 12px;
+    pointer-events: none;
+    transition: transform 0.25s ease;
+}
+
+.submenu-arrow-trigger:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+/* Inner submenu styling */
+.insurance-inner-submenu {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    margin-top: 0;
+    margin-left: 2px;
+    min-width: 260px;
+    padding: 12px 0;
+    border-radius: 8px;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    z-index: 1000;
+    display: none;
+}
+
+/* Inner submenu link styles */
+.insurance-inner-submenu li a {
+    display: block;
+    padding: 8px 20px;
+    color: #1e2a3e;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+.insurance-inner-submenu li a:hover {
+    background-color: #f8f9fc;
+    color: var(--color-primary, #0056b3);
+    padding-left: 26px;
+}
+
+/* Remove hover effect for opening submenu - only arrow click opens it */
+.dropdown-submenu:hover .insurance-inner-submenu {
+    display: none;
+}
+
+/* Open state when arrow is clicked */
+.dropdown-submenu.open .insurance-inner-submenu {
+    display: block;
+}
+
+.dropdown-submenu.open .submenu-arrow-trigger i {
+    transform: rotate(90deg);
+}
+
+/* Mobile responsive */
+@media (max-width: 1023px) {
+    .dropdown-submenu {
+        position: static;
+    }
+    
+    .insurance-inner-submenu {
+        position: static;
+        float: none;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        padding-left: 25px;
+        background-color: #f9fafc;
+        margin-top: 8px;
+        margin-left: 0;
+        border-left: 2px solid var(--color-primary, #0056b3);
+        border-radius: 0;
+        display: none;
+    }
+    
+    .insurance-inner-submenu li a {
+        padding: 8px 15px 8px 20px;
+        white-space: normal;
+    }
+    
+    .dropdown-submenu.open .insurance-inner-submenu {
+        display: block;
+    }
+    
+    .submenu-arrow-trigger {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* Ensure proper dropdown item styling in desktop */
+@media (min-width: 1024px) {
+    .dropdown-menu .submenu-wrapper {
+        padding: 0;
+    }
+    
+    .dropdown-menu .submenu-wrapper .insurance-main-link {
+        padding: 8px 20px;
+    }
+    
+    .dropdown-menu .submenu-arrow-trigger {
+        margin-right: 10px;
+    }
+}
 
 
 /* ============================================================== 
