@@ -980,4 +980,34 @@ function reading_time($text)
     <script src="https://mortgageminds.co.nz/assets/js/ScrollTrigger.min.js"></script>
     <script src="https://mortgageminds.co.nz/assets/js/rangeSlider.min.js"></script>
     <script src="https://mortgageminds.co.nz/assets/js/jquery-ui.min.js"></script>
-    <script src="https://mortgageminds.co.nz/assets/js/SplitText.min.js
+    <script src="https://mortgageminds.co.nz/assets/js/SplitText.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/main.js"></script>
+
+    <script>
+        // Back to top button
+        window.addEventListener('scroll', function() {
+            const backToTop = document.querySelector('.back-to-top');
+            if (window.scrollY > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+
+        // Smooth scrolling for back to top
+        document.querySelector('.back-to-top').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+</body>
+
+</html>
+
+<?php
+$conn->close();
+?>
