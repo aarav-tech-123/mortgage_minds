@@ -404,7 +404,7 @@ if ($result === false) {
                                 </div>
                                 <h3 class="blog-title"><?php echo htmlspecialchars($row['post_title']); ?></h3>
                                 <p class="blog-excerpt"><?php echo wp_trim_words(strip_tags($row['post_content']), 20); ?>...</p>
-                                <a href="https://mortgageminds.co.nz/<?php echo $row['post_name']; ?>/" class="read-more">
+                                <a href="https://mortgageminds.co.nz/blogs/<?php echo $row['post_name']; ?>/" class="read-more">
                                     Read More <i class="fas fa-arrow-right"></i>
                                 </a>
                             </div>
