@@ -121,7 +121,7 @@ function reading_time($text)
     <meta name="description"
         content="<?php echo htmlspecialchars($post_meta['rank_math_description'] ?? substr(strip_tags($blog['post_content']), 0, 160)); ?>">
     <meta name="keywords" content="<?php echo htmlspecialchars($post_meta['rank_math_focus_keyword'] ?? 'mortgage, home loan, refinancing, property investment, first home buyer'); ?>">
-    <link rel="canonical" href="https://mortgageminds.co.nz/<?php echo $slug; ?>/" />
+    <link rel="canonical" href="https://mortgageminds.co.nz/blogs/<?php echo $slug; ?>/" />
 
     <!-- ========== Page Title ========== -->
     <title><?php echo htmlspecialchars($post_meta['rank_math_title'] ?? $blog['post_title']); ?></title>
