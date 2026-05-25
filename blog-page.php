@@ -788,7 +788,7 @@ function reading_time($text)
                     <div class="newsletter-subscribe">
                         <h3><i class="fas fa-user-headset"></i> Let's Make a
                             Call</h3>
-                        <a href="tel:+640800452105">+64 0800 452 105</a>
+                        <a href="tel:+640800452105">099179769</a>
                     </div>
                 </div>
             </div>
@@ -907,8 +907,7 @@ function reading_time($text)
                                         <i class="fas fa-phone"></i>
                                     </div>
                                     <div class="content">
-                                        <a href="tel:0800452105">+64
-                                            0800 452 105</a>
+                                        <a href="tel:0800452105">099179769</a>
                                     </div>
                                 </li>
                                 <li>
