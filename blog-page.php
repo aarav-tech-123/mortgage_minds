@@ -127,19 +127,19 @@ function reading_time($text)
     <title><?php echo htmlspecialchars($post_meta['rank_math_title'] ?? $blog['post_title']); ?></title>
 
     <!-- ========== Favicon Icon ========== -->
-    <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
+    <link rel="shortcut icon" href="https://mortgageminds.co.nz/assets/img/logo.png" type="image/x-icon">
 
     <!-- ========== Start Stylesheet ========== -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
-    <link href="assets/css/magnific-popup.css" rel="stylesheet">
-    <link href="assets/css/swiper-bundle.min.css" rel="stylesheet">
-    <link href="assets/css/animate.min.css" rel="stylesheet">
-    <link href="assets/css/validnavs.css" rel="stylesheet">
-    <link href="assets/css/helper.css" rel="stylesheet">
-    <link href="assets/css/unit-test.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="https://mortgageminds.co.nz/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://mortgageminds.co.nz/assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://mortgageminds.co.nz/assets/css/magnific-popup.css" rel="stylesheet">
+    <link href="https://mortgageminds.co.nz/assets/css/swiper-bundle.min.css" rel="stylesheet">
+    <link href="https://mortgageminds.co.nz/assets/css/animate.min.css" rel="stylesheet">
+    <link href="https://mortgageminds.co.nz/assets/css/validnavs.css" rel="stylesheet">
+    <link href="https://mortgageminds.co.nz/assets/css/helper.css" rel="stylesheet">
+    <link href="https://mortgageminds.co.nz/assets/css/unit-test.css" rel="stylesheet">
+    <link href="https://mortgageminds.co.nz/assets/css/style.css" rel="stylesheet">
+    <link href="https://mortgageminds.co.nz/style.css" rel="stylesheet">
     <!-- ========== End Stylesheet ========== -->
 
     <!-- Blog Post Custom Styles -->
@@ -553,7 +553,7 @@ function reading_time($text)
                                 data-target="#navbar-menu">
                                 <i class="fa fa-bars"></i>
                             </button>
-                            <a class="navbar-brand" href="/">
+                            <a class="navbar-brand" href="https://mortgageminds.co.nz/">
                                 <img src="assets/img/logo.png" class="logo" alt="Logo">
                             </a>
                         </div>
@@ -571,37 +571,37 @@ function reading_time($text)
                             </button>
 
                             <ul class="nav navbar-nav navbar-center" data-in="fadeInDown" data-out="fadeOutUp">
-                                <li><a href="/">Home</a></li>
-                                <li><a href="about-us.html">About Us</a></li>
+                                <li><a href="https://mortgageminds.co.nz/">Home</a></li>
+                                <li><a href="https://mortgageminds.co.nz/about-us.html">About Us</a></li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Services</a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="first-home-buyer.html">First Home Buyer Loan</a></li>
-                                        <li><a href="refinance-mortgage.html">Refinancing Mortgage</a></li>
-                                        <li><a href="property-investment.html">Property Investment</a></li>
+                                        <li><a href="https://mortgageminds.co.nz/first-home-buyer.html">First Home Buyer Loan</a></li>
+                                        <li><a href="https://mortgageminds.co.nz/refinance-mortgage.html">Refinancing Mortgage</a></li>
+                                        <li><a href="https://mortgageminds.co.nz/property-investment.html">Property Investment</a></li>
 
                                         <!-- Insurance Services with Submenu -->
                                         <li class="dropdown-submenu insurance-submenu-item">
                                             <div class="submenu-wrapper">
-                                                <a href="insurance-services.html" class="insurance-main-link">Insurance Services</a>
+                                                <a href="https://mortgageminds.co.nz/insurance-services.html" class="insurance-main-link">Insurance Services</a>
                                                 <span class="submenu-arrow-trigger"><i class="fas fa-chevron-right"></i></span>
                                             </div>
                                             <ul class="dropdown-menu insurance-inner-submenu">
-                                                <li><a href="life-insurance.html">Life Insurance</a></li>
-                                                <li><a href="trauma-recovery-cover.html">Trauma Recovery Cover</a></li>
-                                                <li><a href="medical-insurance.html">Medical Insurance</a></li>
-                                                <li><a href="mortgage-insurance.html">Mortgage & Rent Protection Cover</a></li>
-                                                <li><a href="permanent-disability-insurance-cover.html">Total Permanent Disability Benefit Cover</a></li>
-                                                <li><a href="income-protection-insurance-cover.html">Income Protection Cover</a></li>
+                                                <li><a href="https://mortgageminds.co.nz/life-insurance.html">Life Insurance</a></li>
+                                                <li><a href="https://mortgageminds.co.nz/trauma-recovery-cover.html">Trauma Recovery Cover</a></li>
+                                                <li><a href="https://mortgageminds.co.nz/medical-insurance.html">Medical Insurance</a></li>
+                                                <li><a href="https://mortgageminds.co.nz/mortgage-insurance.html">Mortgage & Rent Protection Cover</a></li>
+                                                <li><a href="https://mortgageminds.co.nz/permanent-disability-insurance-cover.html">Total Permanent Disability Benefit Cover</a></li>
+                                                <li><a href="https://mortgageminds.co.nz/income-protection-insurance-cover.html">Income Protection Cover</a></li>
                                             </ul>
                                         </li>
 
-                                        <li><a href="mortgage-calculators.html">Mortgage Calculators</a></li>
+                                        <li><a href="https://mortgageminds.co.nz/mortgage-calculators.html">Mortgage Calculators</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="mortgage-rates.html">Mortgage Rates</a></li>
-                                <li><a href="blogs.php">Blogs</a></li>
-                                <li><a href="contact.html">Contact Us</a></li>
+                                <li><a href="https://mortgageminds.co.nz/mortgage-rates.html">Mortgage Rates</a></li>
+                                <li><a href="https://mortgageminds.co.nz/blogs.php">Blogs</a></li>
+                                <li><a href="https://mortgageminds.co.nz/contact.html">Contact Us</a></li>
                             </ul>
                         </div>
                     </div>
@@ -843,16 +843,17 @@ function reading_time($text)
                             <h4 class="widget-title">Explore</h4>
                             <ul>
                                 <li>
-                                    <a href="about-us.html">About Us</a>
+                                    <a href="https://mortgageminds.co.nz/about-us.html">About Us</a>
                                 </li>
                                 <li>
-                                    <a href="contact.html">Contact Us</a>
+                                    <a href="https://mortgageminds.co.nz/contact.html">Contact Us</a>
+                                </li>
                                 <li>
-                                    <a href="mortgage-calculators.html">Mortgage
+                                    <a href="https://mortgageminds.co.nz/mortgage-calculators.html">Mortgage
                                         Calculator</a>
                                 </li>
                                 <li>
-                                    <a href="mortgage-rates.html">Mortgage
+                                    <a href="https://mortgageminds.co.nz/mortgage-rates.html">Mortgage
                                         Rates</a>
                                 </li>
                             </ul>
@@ -866,19 +867,19 @@ function reading_time($text)
                             <h4 class="widget-title">Our Services</h4>
                             <ul>
                                 <li>
-                                    <a href="first-home-buyer.html">First
+                                    <a href="https://mortgageminds.co.nz/first-home-buyer.html">First
                                         Home Buyer</a>
                                 </li>
                                 <li>
-                                    <a href="refinance-mortgage.html">Refinancing
+                                    <a href="https://mortgageminds.co.nz/refinance-mortgage.html">Refinancing
                                         Mortgage</a>
                                 </li>
                                 <li>
-                                    <a href="property-investment.html">Property
+                                    <a href="https://mortgageminds.co.nz/property-investment.html">Property
                                         Investment</a>
                                 </li>
                                 <li>
-                                    <a href="insurance-services.html">Insurance Services
+                                    <a href="https://mortgageminds.co.nz/insurance-services.html">Insurance Services
                                     </a>
                                 </li>
                             </ul>
@@ -941,10 +942,10 @@ function reading_time($text)
                     <div class="col-lg-4 text-end">
                         <ul>
                             <li>
-                                <a href="terms-conditions.html">Terms</a>
+                                <a href="https://mortgageminds.co.nz/terms-conditions.html">Terms</a>
                             </li>
                             <li>
-                                <a href="privacy-policy.html">Privacy</a>
+                                <a href="https://mortgageminds.co.nz/privacy-policy.html">Privacy</a>
                             </li>
                         </ul>
                     </div>
@@ -962,21 +963,21 @@ function reading_time($text)
 
     <!-- jQuery Frameworks
     ============================================= -->
-    <script src="assets/js/jquery-3.6.0.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/jquery.appear.js"></script>
-    <script src="assets/js/swiper-bundle.min.js"></script>
-    <script src="assets/js/progress-bar.min.js"></script>
-    <script src="assets/js/isotope.pkgd.min.js"></script>
-    <script src="assets/js/imagesloaded.pkgd.min.js"></script>
-    <script src="assets/js/magnific-popup.min.js"></script>
-    <script src="assets/js/count-to.js"></script>
-    <script src="assets/js/jquery.nice-select.min.js"></script>
-    <script src="assets/js/jquery.scrolla.min.js"></script>
-    <script src="assets/js/YTPlayer.min.js"></script>
-    <script src="assets/js/validnavs.js"></script>
-    <script src="assets/js/gsap.js"></script>
-    <script src="assets/js/ScrollTrigger.min.js"></script>
-    <script src="assets/js/rangeSlider.min.js"></script>
-    <script src="assets/js/jquery-ui.min.js"></script>
-    <script src="assets/js/SplitText.min.js
+    <script src="https://mortgageminds.co.nz/assets/js/jquery-3.6.0.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/jquery.appear.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/swiper-bundle.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/progress-bar.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/isotope.pkgd.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/imagesloaded.pkgd.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/magnific-popup.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/count-to.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/jquery.nice-select.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/jquery.scrolla.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/YTPlayer.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/validnavs.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/gsap.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/ScrollTrigger.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/rangeSlider.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/jquery-ui.min.js"></script>
+    <script src="https://mortgageminds.co.nz/assets/js/SplitText.min.js
