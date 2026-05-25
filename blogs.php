@@ -41,7 +41,7 @@ if ($result === false) {
 
     <!-- ========== Page Title ========== -->
     <title>Mortgage Blog & Resources | Expert Home Loan Advice | Mortgage Minds NZ</title>
-    <link rel="canonical" href="https://mortgageminds.co.nz/blogs.php" />
+    <link rel="canonical" href="https://mortgageminds.co.nz/blogs.php/" />
 
     <!-- ========== Favicon Icon ========== -->
     <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
