@@ -554,7 +554,7 @@ function reading_time($text)
                                 <i class="fa fa-bars"></i>
                             </button>
                             <a class="navbar-brand" href="https://mortgageminds.co.nz/">
-                                <img src="assets/img/logo.png" class="logo" alt="Logo">
+                                <img src="https://mortgageminds.co.nz/assets/img/logo.png" class="logo" alt="Logo">
                             </a>
                         </div>
                     </div>
@@ -564,7 +564,7 @@ function reading_time($text)
                     <div class="col-xxl-6 offset-xxl-1 col-lg-7 col-md-4 col-sm-4 col-4">
                         <div class="collapse navbar-collapse" id="navbar-menu">
 
-                            <img src="assets/img/logo.png" alt="Logo">
+                            <img src="https://mortgageminds.co.nz/assets/img/logo.png" alt="Logo">
                             <button type="button" class="navbar-toggle" data-toggle="collapse"
                                 data-target="#navbar-menu">
                                 <i class="fa fa-times"></i>
