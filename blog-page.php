@@ -646,7 +646,7 @@ function reading_time($text)
     <section class="blog-post-hero">
         <div class="container">
             <div class="blog-post-badge">
-                <i class="fas fa-blog"></i>
+                <!-- <i class="fas fa-blog"></i> -->
                 <?php echo !empty($categories) ? htmlspecialchars($categories[0]['name']) : 'Blog Post'; ?>
             </div>
             <h1><?php echo htmlspecialchars($blog['post_title']); ?></h1>
@@ -654,14 +654,7 @@ function reading_time($text)
                 <span><i class="fas fa-calendar-alt"></i> <?php echo date("F j, Y", strtotime($blog['post_date'])); ?></span>
                 <span><i class="fas fa-user"></i> <?php echo htmlspecialchars($author); ?></span>
                 <span><i class="fas fa-clock"></i> <?php echo reading_time($blog['post_content']); ?> min read</span>
-                <?php if (!empty($categories)): ?>
-                    <span>
-                        <i class="fas fa-folder"></i>
-                        <?php foreach ($categories as $cat): ?>
-                            <a href="#" class="category-link"><?php echo htmlspecialchars($cat['name']); ?></a>
-                        <?php endforeach; ?>
-                    </span>
-                <?php endif; ?>
+                
             </div>
         </div>
     </section>
@@ -673,7 +666,7 @@ function reading_time($text)
         <div class="container">
             <div class="blog-content-wrapper">
                 <!-- Back to Blogs -->
-                <a href="blogs.php" class="back-to-blog">
+                <a href="https://mortgageminds.co.nz/blogs.php" class="back-to-blog">
                     <i class="fas fa-arrow-left"></i> Back to All Blogs
                 </a>
 
