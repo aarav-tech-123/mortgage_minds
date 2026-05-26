@@ -654,7 +654,7 @@ function reading_time($text)
                 <span><i class="fas fa-calendar-alt"></i> <?php echo date("F j, Y", strtotime($blog['post_date'])); ?></span>
                 <span><i class="fas fa-user"></i> <?php echo htmlspecialchars($author); ?></span>
                 <span><i class="fas fa-clock"></i> <?php echo reading_time($blog['post_content']); ?> min read</span>
-                
+
             </div>
         </div>
     </section>
@@ -781,7 +781,7 @@ function reading_time($text)
                     <div class="newsletter-subscribe">
                         <h3><i class="fas fa-user-headset"></i> Let's Make a
                             Call</h3>
-                        <a href="tel:+640800452105">099179769</a>
+                        <a href="tel:099179769">099179769</a>
                     </div>
                 </div>
             </div>

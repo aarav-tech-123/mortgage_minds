@@ -468,7 +468,7 @@ if ($result === false) {
                     <div class="newsletter-subscribe">
                         <h3><i class="fas fa-user-headset"></i> Let's Make a
                             Call</h3>
-                        <a href="tel:+640800452105">099179769</a>
+                        <a href="tel:099179769">099179769</a>
                     </div>
                 </div>
             </div>
@@ -586,7 +586,8 @@ if ($result === false) {
                                         <i class="fas fa-phone"></i>
                                     </div>
                                     <div class="content">
-                                        <a href="tel:0800452105">099179769</a>
+                                        <a href="tel:099179769">099179769</a>
+
                                     </div>
                                 </li>
                                 <li>
