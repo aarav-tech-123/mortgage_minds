@@ -535,6 +535,16 @@ function reading_time($text)
         }
     </style>
 </head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1PMD21XQXM"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-1PMD21XQXM');
+</script>
 
 <body>
 
@@ -900,7 +910,7 @@ function reading_time($text)
                                         <i class="fas fa-phone"></i>
                                     </div>
                                     <div class="content">
-                                        <a href="tel:0800452105">099179769</a>
+                                        <a href="tel:099179769">099179769</a>
                                     </div>
                                 </li>
                                 <li>
@@ -912,7 +922,7 @@ function reading_time($text)
                                     </div>
                                 </li>
                             </ul>
-                        </div>
+                        </div>s
                     </div>
                     <!-- End Singel Item -->
 

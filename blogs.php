@@ -205,6 +205,16 @@ if ($result === false) {
     <![endif]-->
 
 </head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1PMD21XQXM"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-1PMD21XQXM');
+</script>
 
 <body>
 
