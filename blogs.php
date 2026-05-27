@@ -30,6 +30,8 @@ if ($result === false) {
 <html lang="en">
 
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1PMD21XQXM"></script>
+
     <!-- ========== Meta Tags ========== -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -205,7 +207,6 @@ if ($result === false) {
     <![endif]-->
 
 </head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1PMD21XQXM"></script>
 <script>
     window.dataLayer = window.dataLayer || [];
 

@@ -111,6 +111,7 @@ function reading_time($text)
 <html lang="en">
 
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1PMD21XQXM"></script>
     <!-- ========== Meta Tags ========== -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -535,7 +536,6 @@ function reading_time($text)
         }
     </style>
 </head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1PMD21XQXM"></script>
 <script>
     window.dataLayer = window.dataLayer || [];
 
