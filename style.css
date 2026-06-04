@@ -746,7 +746,16 @@ Sidebar heading:  22px 'Manrope', sans-serif
 }
 
 .fun-factor-style-one-box .fun-fact .info {
-    text-align: center;
+    /* text-align: center; */
+    /* margin-top: 40px; */
+	display:flex;
+	flex-direction:column;
+	justify-content:center;
+	align-items:center;
+
+	p{
+		text-align:center;
+	}
 }
 
 /* Responsive */

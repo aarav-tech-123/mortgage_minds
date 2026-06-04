@@ -5398,7 +5398,7 @@ ul.list-check li::after {
 	font-weight: 700;
 	margin: 0;
 	font-size: 20px;
-	border-bottom: 2px solid;
+	/* border-bottom: 2px solid; */
 }
 
 .call-action .info {
@@ -6247,6 +6247,17 @@ a.btn-reagular i {
 
 .service-style-three-item {
 	margin-top: 40px;
+	display:flex;
+	flex-direction:column;
+	justify-content:center;
+	align-items:center;
+
+	h4{
+		text-align:center;
+	}
+	p{
+		text-align:center;
+	}
 }
 
 .service-three-tab-content .row {
