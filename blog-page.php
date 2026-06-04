@@ -853,7 +853,7 @@ function reading_time($text)
                                     </li>
                                 </ul>
                             </div>
-                            <a class="btn btn-theme btn-md animation mt-30" href="contact.html">Contact Us</a>
+                            <a class="btn btn-theme btn-md animation mt-30" href="https://mortgageminds.co.nz/contact.html">Contact Us</a>
                         </div>
                     </div>
                     <!-- End Singel Item -->
