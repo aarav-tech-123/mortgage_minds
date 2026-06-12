@@ -273,28 +273,28 @@ function initInsuranceArrowSubmenu() {
 		const bannerFade = new Swiper(".banner-fade", {
 			// Optional parameters
 			direction: "horizontal",
-			loop: true,
-			autoplay: true,
+			loop: false,
+			autoplay: false,
 			effect: "fade",
 			fadeEffect: {
 				crossFade: true
 			},
-			autoplay: {
-				delay: 5000,
-				disableOnInteraction: false,
-			},
+			// autoplay: {
+			// 	delay: 5000,
+			// 	disableOnInteraction: false,
+			// },
 			// If we need pagination
-			pagination: {
-				el: '.swiper-pagination',
-				type: 'bullets',
-				clickable: true,
-			},
+			// pagination: {
+			// 	el: '.swiper-pagination',
+			// 	type: 'bullets',
+			// 	clickable: true,
+			// },
 
 			// Navigation arrows
-			navigation: {
-				nextEl: ".swiper-button-next",
-				prevEl: ".swiper-button-prev"
-			}
+			// navigation: {
+			// 	nextEl: ".swiper-button-next",
+			// 	prevEl: ".swiper-button-prev"
+			// }
 
 			// And if we need scrollbar
 			/*scrollbar: {
