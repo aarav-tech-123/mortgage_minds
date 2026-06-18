@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Connect to Mortgage Minds WordPress database
-$servername = "153.92.15.63";
+$servername = "localhost";
 $username = "u464227444_iAMsy";
 $password = ";t(1}482s.";
 $dbname = "u464227444_i7wsj";
@@ -59,7 +59,7 @@ if ($result === false) {
 
     <!-- ========== Page Title ========== -->
     <title>Mortgage Blog & Resources | Expert Home Loan Advice | Mortgage Minds NZ</title>
-    <link rel="canonical" href="https://mortgageminds.co.nz/blogs.php/" />
+    <link rel="canonical" href="https://www.mortgageminds.co.nz/blogs.php" />
 
     <!-- ========== Favicon Icon ========== -->
     <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
@@ -106,7 +106,6 @@ if ($result === false) {
 
         .blog-image {
             width: 100%;
-            height: 220px;
             object-fit: cover;
             border-radius: 12px 12px 0 0;
         }
@@ -416,8 +415,8 @@ if ($result === false) {
                         }
                         ?>
                         <div class="blog-card">
-                            <div class="category-tag"><?php echo $category; ?></div>
-                            <?php if ($img_url): ?>
+                            <!-- <div class="category-tag"><?php echo $category; ?></div>
+                            <?php if ($img_url): ?> -->
                                 <img src="<?php echo $img_url; ?>" class="blog-image"
                                     alt="<?php echo htmlspecialchars($row['post_title']); ?>">
                             <?php else: ?>
@@ -432,7 +431,7 @@ if ($result === false) {
                                 </div>
                                 <h3 class="blog-title"><?php echo htmlspecialchars($row['post_title']); ?></h3>
                                 <p class="blog-excerpt"><?php echo wp_trim_words(strip_tags($row['post_content']), 20); ?>...</p>
-                                <a href="https://mortgageminds.co.nz/blogs/<?php echo $row['post_name']; ?>/" class="read-more">
+                                <a href="https://www.mortgageminds.co.nz/blogs/<?php echo $row['post_name']; ?>/" class="read-more">
                                     Read More <i class="fas fa-arrow-right"></i>
                                 </a>
                             </div>
