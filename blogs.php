@@ -55,10 +55,10 @@ if ($result === false) {
     <meta name="robots" content="index, follow">
 
     <meta name="description"
-        content="Expert mortgage tips, home loan guides, & financial insights from Mortgage Minds, New Zealand's trusted brokers. Helping Kiwis make smarter home loan decisions.">
+        content="Read expert mortgage tips, home loan guides and finance insights from Mortgage Minds NZ. Helping Kiwis compare options and make smarter loan choices with ease!">
 
     <!-- ========== Page Title ========== -->
-    <title>Our Blogs | Expert Home Loan Advice | Mortgage Minds NZ</title>
+    <title>Mortgage Blog & Resources | Expert Home Loan Advice NZ Guide</title>
     <link rel="canonical" href="https://www.mortgageminds.co.nz/blogs.php" />
 
     <!-- ========== Favicon Icon ========== -->
