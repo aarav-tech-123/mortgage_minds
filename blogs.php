@@ -55,10 +55,10 @@ if ($result === false) {
     <meta name="robots" content="index, follow">
 
     <meta name="description"
-        content="Read expert mortgage tips, home loan guides, and financial insights from Mortgage Minds, New Zealand's trusted mortgage brokers. Helping Kiwis make smarter home loan decisions.">
+        content="Expert mortgage tips, home loan guides, & financial insights from Mortgage Minds, New Zealand's trusted brokers. Helping Kiwis make smarter home loan decisions.">
 
     <!-- ========== Page Title ========== -->
-    <title>Mortgage Blog & Resources | Expert Home Loan Advice | Mortgage Minds NZ</title>
+    <title>Our Blogs | Expert Home Loan Advice | Mortgage Minds NZ</title>
     <link rel="canonical" href="https://www.mortgageminds.co.nz/blogs.php" />
 
     <!-- ========== Favicon Icon ========== -->
@@ -417,24 +417,24 @@ if ($result === false) {
                         <div class="blog-card">
                             <!-- <div class="category-tag"><?php echo $category; ?></div>
                             <?php if ($img_url): ?> -->
-                                <img src="<?php echo $img_url; ?>" class="blog-image"
-                                    alt="<?php echo htmlspecialchars($row['post_title']); ?>">
-                            <?php else: ?>
-                                <div class="blog-image-placeholder">
-                                    <i class="fas fa-home" style="font-size: 48px; color: rgba(255,255,255,0.5);"></i>
-                                </div>
-                            <?php endif; ?>
-                            <div class="blog-content">
-                                <div class="blog-meta">
-                                    <span><i class="fas fa-calendar-alt"></i> <?php echo date("F j, Y", strtotime($row['post_date'])); ?></span>
-                                    <span><i class="fas fa-user"></i> <?php echo htmlspecialchars($author); ?></span>
-                                </div>
-                                <h3 class="blog-title"><?php echo htmlspecialchars($row['post_title']); ?></h3>
-                                <p class="blog-excerpt"><?php echo wp_trim_words(strip_tags($row['post_content']), 20); ?>...</p>
-                                <a href="https://www.mortgageminds.co.nz/blogs/<?php echo $row['post_name']; ?>/" class="read-more">
-                                    Read More <i class="fas fa-arrow-right"></i>
-                                </a>
+                            <img src="<?php echo $img_url; ?>" class="blog-image"
+                                alt="<?php echo htmlspecialchars($row['post_title']); ?>">
+                        <?php else: ?>
+                            <div class="blog-image-placeholder">
+                                <i class="fas fa-home" style="font-size: 48px; color: rgba(255,255,255,0.5);"></i>
                             </div>
+                        <?php endif; ?>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span><i class="fas fa-calendar-alt"></i> <?php echo date("F j, Y", strtotime($row['post_date'])); ?></span>
+                                <span><i class="fas fa-user"></i> <?php echo htmlspecialchars($author); ?></span>
+                            </div>
+                            <h3 class="blog-title"><?php echo htmlspecialchars($row['post_title']); ?></h3>
+                            <p class="blog-excerpt"><?php echo wp_trim_words(strip_tags($row['post_content']), 20); ?>...</p>
+                            <a href="https://www.mortgageminds.co.nz/blogs/<?php echo $row['post_name']; ?>/" class="read-more">
+                                Read More <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
                         </div>
                     <?php endwhile; ?>
                 <?php else: ?>
