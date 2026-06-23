@@ -955,8 +955,7 @@ function reading_time($text)
                     <div class="col-lg-8">
                         <p>
                             © Copyright 2025 Mortgage Minds. All
-                            Rights Reserved | Designed by <a href="https://aaravtech.net">Aarav Tech Services LLP</a> <i
-                                class="fa fa-heart"></i>
+                            Rights Reserved | Designed by <a href="https://aaravtech.net">Aarav Tech Services LLP</a>
                         </p>
                     </div>
                     <div class="col-lg-4 text-end">
