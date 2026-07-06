@@ -550,6 +550,9 @@ function reading_time($text)
                 font-size: 20px;
             }
         }
+        .wp-block-list li {
+            list-style-type: disc;
+        }
     </style>
 </head>
 <script>
@@ -960,6 +963,9 @@ function reading_time($text)
                     </div>
                     <div class="col-lg-4 text-end">
                         <ul>
+                            <li>
+                                <a href="disclouser-statement.html">Disclouser Statement</a>
+                            </li>
                             <li>
                                 <a href="https://www.mortgageminds.co.nz/terms-conditions.html">Terms</a>
                             </li>

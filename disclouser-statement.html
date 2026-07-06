@@ -1,52 +1,17 @@
-<?php
-// Enable debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Connect to Mortgage Minds WordPress database
-$servername = "localhost";
-$username = "u464227444_iAMsy";
-$password = ";t(1}482s.";
-$dbname = "u464227444_i7wsj";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("❌ Connection failed: " . $conn->connect_error);
-}
-
-// Fetch published blog posts
-$sql = "SELECT ID, post_title, post_content, post_date, post_author, post_name
-        FROM wp_posts
-        WHERE post_type='post' AND post_status='publish'
-        ORDER BY post_date DESC";
-$result = $conn->query($sql);
-
-if ($result === false) {
-    die("❌ SQL Error: " . $conn->error);
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <script>
-        (function(w, d, s, l, i) {
-            w[l] = w[l] || [];
-            w[l].push({
-                'gtm.start': new Date().getTime(),
-                event: 'gtm.js'
-            });
-            var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s),
-                dl = l != 'dataLayer' ? '&l=' + l : '';
-            j.async = true;
-            j.src =
-                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-            f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-NTDBTHX9');
-    </script>
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-NTDBTHX9');</script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-1PMD21XQXM"></script>
+    <script>   window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-1PMD21XQXM'); </script>
 
     <!-- ========== Meta Tags ========== -->
     <meta charset="utf-8">
@@ -54,13 +19,11 @@ if ($result === false) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
 
-    <meta name="description"
-        content="Read expert mortgage tips, home loan guides and finance insights from Mortgage Minds NZ. Helping Kiwis compare options and make smarter loan choices with ease!">
+    <meta name="description" content="Read Mortgage Mind’s financial advice disclosure, including services, fees, commissions, conflicts of interest, client duties and complaint processes in NZ.">
 
     <!-- ========== Page Title ========== -->
-    <title>Mortgage Blog & Resources | Expert Home Loan Advice NZ Guide</title>
-    <link rel="canonical" href="https://www.mortgageminds.co.nz/blogs.php" />
-
+    <title>Financial advice disclosure information from Mortgage Minds</title>
+    <link rel="canonical" href="https://www.mortgageminds.co.nz/disclouser-statement.html" />
     <!-- ========== Favicon Icon ========== -->
     <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
 
@@ -77,164 +40,26 @@ if ($result === false) {
     <link href="style.css" rel="stylesheet">
     <!-- ========== End Stylesheet ========== -->
 
-    <!-- Custom Blog Styles -->
-    <style>
-        .blog-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-        }
-
-        .blog-card {
-            background: white;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            transition: all 0.4s;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .blog-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        }
-
-        .blog-image {
-            width: 100%;
-            object-fit: cover;
-            border-radius: 12px 12px 0 0;
-        }
-
-        .blog-image-placeholder {
-            width: 100%;
-            height: 220px;
-            background: linear-gradient(135deg, #1a3a5c, #2a5298);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px 12px 0 0;
-        }
-
-        .blog-content {
-            padding: 25px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .blog-meta {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 12px;
-            font-size: 13px;
-            color: #6c757d;
-            flex-wrap: wrap;
-        }
-
-        .blog-meta i {
-            color: #c9a84c;
-            margin-right: 5px;
-        }
-
-        .blog-title {
-            font-size: 20px;
-            margin-bottom: 12px;
-            color: #2c3e50;
-            font-weight: 600;
-            line-height: 1.4;
-        }
-
-        .blog-excerpt {
-            color: #6c757d;
-            margin-bottom: 20px;
-            font-size: 15px;
-            line-height: 1.6;
-            flex-grow: 1;
-        }
-
-        .read-more {
-            background: transparent;
-            color: #1a3a5c;
-            border: 2px solid #1a3a5c;
-            padding: 10px 22px;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            align-self: flex-start;
-        }
-
-        .read-more:hover {
-            background: #1a3a5c;
-            color: white;
-            transform: translateX(3px);
-            box-shadow: 0 4px 12px rgba(26, 59, 93, 0.2);
-        }
-
-        .category-tag {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: #c9a84c;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 2;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .no-posts-message {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        @media (max-width: 992px) {
-            .blog-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .blog-grid {
-                grid-template-columns: 1fr;
-                max-width: 500px;
-                margin: 0 auto;
-            }
-        }
-    </style>
-
     <!--[if lte IE 9]>
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
     <![endif]-->
 
-</head>
-<script>
-    window.dataLayer = window.dataLayer || [];
+    <style>
+       ul li {
+         list-style-type: disc;
+         margin-left: 20px;
+       }
+       ol li {
+         list-style-type:decimal;
+         margin-left: 20px;
+       }
+    </style>
 
-    function gtag() {
-        dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-    gtag('config', 'G-1PMD21XQXM');
-</script>
+</head>
 
 <body>
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NTDBTHX9"
-            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NTDBTHX9" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
     <!-- Header 
     ============================================= -->
     <header>
@@ -269,7 +94,8 @@ if ($result === false) {
 
                             <ul class="nav navbar-nav navbar-center" data-in="fadeInDown" data-out="fadeOutUp">
                                 <li><a href="/">Home</a></li>
-                                <li><a href="about-us.html">About Us</a></li>
+                                <li><a href="about-us.html">About
+                                        Us</a></li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Services</a>
                                     <ul class="dropdown-menu">
@@ -280,25 +106,34 @@ if ($result === false) {
                                         <!-- Insurance Services with Submenu -->
                                         <li class="dropdown-submenu insurance-submenu-item">
                                             <div class="submenu-wrapper">
-                                                <a href="insurance-services.html" class="insurance-main-link">Insurance Services</a>
-                                                <span class="submenu-arrow-trigger"><i class="fas fa-chevron-right"></i></span>
+                                                <a href="insurance-services.html" class="insurance-main-link">Insurance
+                                                    Services</a>
+                                                <span class="submenu-arrow-trigger"><i
+                                                        class="fas fa-chevron-right"></i></span>
                                             </div>
                                             <ul class="dropdown-menu insurance-inner-submenu">
                                                 <li><a href="life-insurance.html">Life Insurance</a></li>
                                                 <li><a href="trauma-recovery-cover.html">Trauma Recovery Cover</a></li>
                                                 <li><a href="medical-insurance.html">Medical Insurance</a></li>
-                                                <li><a href="mortgage-insurance.html">Mortgage & Rent Protection Cover</a></li>
-                                                <li><a href="permanent-disability-insurance-cover.html">Total Permanent Disability Benefit Cover</a></li>
-                                                <li><a href="income-protection-insurance-cover.html">Income Protection Cover</a></li>
+                                                <li><a href="mortgage-insurance.html">Mortgage & Rent Protection
+                                                        Cover</a></li>
+                                                <li><a href="permanent-disability-insurance-cover.html">Total Permanent
+                                                        Disability Benefit Cover</a></li>
+                                                <li><a href="income-protection-insurance-cover.html">Income Protection
+                                                        Cover</a></li>
                                             </ul>
                                         </li>
 
                                         <li><a href="mortgage-calculators.html">Mortgage Calculators</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="mortgage-rates.html">Mortgage Rates</a></li>
+                                <li><a href="mortgage-rates.html">Mortgage
+                                        Rates</a></li>
+
                                 <li><a href="blogs.php">Blogs</a></li>
-                                <li><a href="contact.html">Contact Us</a></li>
+
+                                <li><a href="contact.html">Contact
+                                        Us</a></li>
                             </ul>
                         </div>
                     </div>
@@ -309,6 +144,7 @@ if ($result === false) {
                             <!-- Start Atribute Navigation -->
                             <div class="attr-nav attr-box">
                                 <ul>
+                                    <!-- <li class="search"><a href="#"><i class="far fa-search"></i></a></li> -->
                                     <li class="contact">
                                         <div class="call">
                                             <div class="icon">
@@ -316,13 +152,16 @@ if ($result === false) {
                                             </div>
                                             <div class="info">
                                                 <p>Have any Questions?</p>
-                                                <h5><a href="mailto:nilesh@mortgageminds.co.nz">nilesh@mortgageminds.co.nz</a></h5>
+                                                <h5><a
+                                                        href="mailto:nilesh@mortgageminds.co.nz">nilesh@mortgageminds.co.nz</a>
+                                                </h5>
                                             </div>
                                         </div>
                                     </li>
                                 </ul>
                             </div>
                             <!-- End Atribute Navigation -->
+
                         </div>
                     </div>
 
@@ -341,15 +180,16 @@ if ($result === false) {
     <!-- Start Breadcrumb 
     ============================================= -->
     <div class="breadcrumb-area bg-cover shadow dark text-light"
-        style="background-image: url(assets/img/contact-banner.webp);">
+        style="background: #015FC9; min-height: 400px; display: flex; align-items: center;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6">
-                    <h1>Mortgage Minds Blog</h1>
-                    <p>Expert mortgage advice, home loan tips, and financial insights for Kiwis</p>
+                    <h1>Disclouser Statement</h1>
+                    <h3>Important information about our business</h3>
                     <ul class="breadcrumb">
-                        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                        <li>Blogs</li>
+                        <li><a href="/"><i class="fas fa-home"></i>
+                                Home</a></li>
+                        <li>Disclouser Statement</li>
                     </ul>
                 </div>
             </div>
@@ -357,135 +197,240 @@ if ($result === false) {
     </div>
     <!-- End Breadcrumb -->
 
-    <!-- Start Blog Section 
-    ============================================= -->
-    <div class="blog-style-one-area bg-gray default-padding">
+    <!-- Start Disclosure Content
+============================================= -->
+    <div class="about-style-one-area default-padding">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 offset-lg-2">
-                    <div class="site-heading text-center">
-                        <h4 class="sub-title">Our Blog</h4>
-                        <h2 class="title split-text">Mortgage & Home Loan <span style="color: #1a3a5c;">Insights</span></h2>
-                        <p>Stay informed with expert articles on home loans, refinancing, property investment, and financial planning for Kiwis.</p>
+                <div class="col-lg-12">
+
+                    <div>
+                        <h2 class="title">Financial Advice Disclosure Statement</h2>
+                        <p>
+                            At Mortgage Minds, we are committed to providing transparent,
+                            professional, and client-focused financial advice. The following
+                            disclosure outlines the services we provide, the products we advise
+                            on, our fees, commissions, complaints process, and our obligations
+                            to you.
+                        </p>
                     </div>
+
+                    <div class="mb-50">
+                        <h3>Our Services</h3>
+                        <ul>
+                            <li>Investment strategies (strategic asset allocation and investing)</li>
+                            <li>KiwiSaver investment strategies and retirement planning</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-50">
+                        <h3>Products We Can Provide Financial Advice About</h3>
+                        <ul>
+                            <li>KiwiSaver investments</li>
+                            <li>Loans including mortgages, reverse mortgages and deposit bonds</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-50">
+                        <h3>Product Providers We May Recommend</h3>
+
+                        <p>
+                            ANZ, ASB, BNZ, Westpac, Kiwibank, ASAP Finance, Avanti,
+                            Basecorp, Cooperative Bank, CMFL, Bank of China,
+                            Bluestone, China Construction Bank, Cressida Capital,
+                            DBR, First Mortgage Trust, Funding Partners,
+                            Heartland Bank, Liberty, Pepper Money, Plus Finance,
+                            Prospa, Resimac, SBS, AIA Go Home Loans,
+                            Pallas Capital and Southern Cross Partners.
+                        </p>
+                    </div>
+
+                    <div class="mb-50">
+                        <h3>Our Fees</h3>
+
+                        <p>
+                            The actual fee charged to you will depend on the nature and scope
+                            of the advice or service we provide. We will discuss and agree on
+                            the actual fees before proceeding and explain how they are payable.
+                        </p>
+
+                        <p>The fees may include:</p>
+
+                        <ul>
+                            <li>A fixed dollar amount; or</li>
+                            <li>A percentage-based fee.</li>
+                        </ul>
+
+                        <p class="mt-5">Our agreed advice and service fees may include:</p>
+
+                        <ul>
+                            <li>Initial advice</li>
+                            <li>Ongoing advice</li>
+                            <li>Annual advice and services</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-50">
+                        <h3>Other Costs</h3>
+
+                        <p>
+                            Where additional costs are incurred while providing our advice and
+                            services, you will be responsible for these costs. Any additional
+                            costs will always be discussed and agreed with you before they are
+                            incurred.
+                        </p>
+
+                        <p>
+                            We do not charge clients any direct fees, expenses, or additional
+                            costs for the financial advice we provide unless otherwise agreed.
+                        </p>
+                    </div>
+
+                    <div class="mb-50">
+                        <h3>Commissions</h3>
+
+                        <p>
+                            For services relating to insurance, investment and loan products,
+                            commissions may be paid by the relevant product provider.
+                        </p>
+
+                        <p>
+                            If you choose to take out a mortgage following our advice, we may
+                            receive a commission from the lender of between
+                            <strong>0.55% and 0.85%</strong> of the initial mortgage balance
+                            or amount funded.
+                        </p>
+
+                        <p>
+                            We may also receive an ongoing commission of
+                            <strong>0.15% to 0.20%</strong> of the outstanding mortgage
+                            balance on each annual anniversary.
+                        </p>
+                    </div>
+
+                    <div class="mb-50">
+                        <h3>Conflicts of Interest & Other Incentives</h3>
+
+                        <p>
+                            We receive commissions from lenders when mortgages settle and,
+                            in some cases, ongoing commissions on mortgage anniversaries.
+                        </p>
+
+                        <p>
+                            Our advice process ensures recommendations are based on your
+                            financial situation, objectives and needs. We research suitable
+                            lenders and products before making any recommendation.
+                        </p>
+
+                        <p>
+                            We also complete annual training on managing conflicts of interest
+                            and maintain a conflict of interest register.
+                        </p>
+
+                        <p>
+                            We may receive referral commissions of between
+                            <strong>0% and 30%</strong> of the initial commission received
+                            when referring clients to an Insurance Adviser.
+                        </p>
+
+                        <p>
+                            Infinity Mortgage is subject to annual audits and compliance
+                            reviews to ensure we continue to meet our professional
+                            obligations.
+                        </p>
+                    </div>
+
+                    <div class="mb-50">
+                        <h3>How We Manage Conflicts of Interest</h3>
+
+                        <ul>
+                            <li>Recommendations are based on your goals and financial circumstances.</li>
+                            <li>All advisers complete annual conflict management training.</li>
+                            <li>We maintain registers of conflicts, gifts and incentives.</li>
+                            <li>Registers are reviewed regularly and additional training is provided where required.
+                            </li>
+                            <li>We complete an annual independent Compliance Assurance Review.</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-50">
+                        <h3>Our Duties and Obligations to You</h3>
+
+                        <p>
+                            Under the Financial Markets Conduct Act, we are required to:
+                        </p>
+
+                        <ul>
+                            <li>Meet the standards of competence, knowledge and skill set out in the Code of Conduct.
+                            </li>
+                            <li>Give priority to our clients' interests.</li>
+                            <li>Exercise care, diligence and skill.</li>
+                            <li>Meet the standards of ethical behaviour, conduct and client care required by the Code of
+                                Conduct.</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-50">
+                        <h3>Our Internal Complaints Process</h3>
+
+                        <p>
+                            If you have a concern or complaint regarding our advice or
+                            service, please let us know so we can work with you to resolve it.
+                        </p>
+
+                        <p>
+                            <strong>Complaints Manager:</strong> Nileshkumar Patel<br>
+                            <strong>Email:</strong> nilesh@infinitymortgage.co.nz<br>
+                            <strong>Phone:</strong> +64 2041000010
+                        </p>
+
+                        <p>
+                            We aim to acknowledge your complaint within 24 hours.
+                        </p>
+
+                        <ol>
+                            <li>Request your complaint in writing.</li>
+                            <li>Acknowledge receipt within 2 working days.</li>
+                            <li>Investigate by reviewing documentation and speaking with relevant parties.</li>
+                            <li>Provide a formal written response within 28 days.</li>
+                        </ol>
+                    </div>
+
+                    <div class="mb-50">
+                        <h3>Our External Complaints Process</h3>
+
+                        <p>
+                            If we cannot resolve your complaint, you may contact our external
+                            dispute resolution provider:
+                        </p>
+
+                        <p>
+                            <strong>Financial Services Complaints Limited (FSCL)</strong><br>
+                            A Financial Ombudsman Service
+                        </p>
+
+                        <p>
+                            <strong>Address:</strong><br>
+                            Level 4, 101 Lambton Quay<br>
+                            Wellington 6011
+                        </p>
+
+                        <p>
+                            <strong>Phone:</strong> 0800 347 257<br>
+                            <strong>Email:</strong> complaints@fscl.org.nz
+                        </p>
+
+                        <p>
+                            This independent service is free of charge and is available if we
+                            are unable to resolve your complaint directly.
+                        </p>
+                    </div>
+
                 </div>
-            </div>
-
-            <div class="blog-grid">
-                <?php if ($result->num_rows > 0): ?>
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                        <?php
-                        // Get author name
-                        $author_id = $row['post_author'];
-                        $author_result = $conn->query("SELECT display_name FROM wp_users WHERE ID = $author_id");
-                        $author = ($author_result && $author_result->num_rows > 0)
-                            ? $author_result->fetch_assoc()['display_name']
-                            : "Mortgage Minds Team";
-
-                        // Get featured image
-                        $image_result = $conn->query("
-                            SELECT meta_value FROM wp_postmeta
-                            WHERE post_id = {$row['ID']} AND meta_key = '_thumbnail_id' LIMIT 1
-                        ");
-                        $thumbnail_id = ($image_result && $image_result->num_rows > 0)
-                            ? $image_result->fetch_assoc()['meta_value']
-                            : 0;
-
-                        $img_url = '';
-                        if ($thumbnail_id) {
-                            $guid_result = $conn->query("SELECT guid FROM wp_posts WHERE ID = $thumbnail_id");
-                            $img_url = ($guid_result && $guid_result->num_rows > 0)
-                                ? $guid_result->fetch_assoc()['guid']
-                                : '';
-                        }
-
-                        // Determine category based on content
-                        $content = strtolower($row['post_content'] . ' ' . $row['post_title']);
-                        $category = "Home Loans";
-                        if (strpos($content, 'first home') !== false || strpos($content, 'first-home') !== false) {
-                            $category = "First Home Buyer";
-                        } elseif (strpos($content, 'refinanc') !== false) {
-                            $category = "Refinancing";
-                        } elseif (strpos($content, 'invest') !== false || strpos($content, 'property') !== false) {
-                            $category = "Property Investment";
-                        } elseif (strpos($content, 'interest rate') !== false || strpos($content, 'market') !== false) {
-                            $category = "Market Updates";
-                        } elseif (strpos($content, 'insur') !== false) {
-                            $category = "Insurance";
-                        }
-                        ?>
-                        <div class="blog-card">
-                            <!-- <div class="category-tag"><?php echo $category; ?></div>
-                            <?php if ($img_url): ?> -->
-                            <img src="<?php echo $img_url; ?>" class="blog-image"
-                                alt="<?php echo htmlspecialchars($row['post_title']); ?>">
-                        <?php else: ?>
-                            <div class="blog-image-placeholder">
-                                <i class="fas fa-home" style="font-size: 48px; color: rgba(255,255,255,0.5);"></i>
-                            </div>
-                        <?php endif; ?>
-                        <div class="blog-content">
-                            <div class="blog-meta">
-                                <span><i class="fas fa-calendar-alt"></i> <?php echo date("F j, Y", strtotime($row['post_date'])); ?></span>
-                                <span><i class="fas fa-user"></i> <?php echo htmlspecialchars($author); ?></span>
-                            </div>
-                            <h3 class="blog-title"><?php echo htmlspecialchars($row['post_title']); ?></h3>
-                            <p class="blog-excerpt"><?php echo wp_trim_words(strip_tags($row['post_content']), 20); ?>...</p>
-                            <a href="https://www.mortgageminds.co.nz/blogs/<?php echo $row['post_name']; ?>/" class="read-more">
-                                Read More <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                        </div>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <div class="no-posts-message">
-                        <i class="fas fa-newspaper" style="font-size: 64px; color: #6c757d; margin-bottom: 20px; display: block;"></i>
-                        <h3 style="color: #2c3e50; margin-bottom: 10px;">No Blog Posts Yet</h3>
-                        <p style="color: #6c757d; font-size: 18px;">Check back soon for expert mortgage advice, home loan tips, and financial insights from our advisors.</p>
-                    </div>
-                <?php endif; ?>
             </div>
         </div>
     </div>
-    <!-- End Blog Section -->
-
-    <!-- Start CTA Section -->
-    <section class="cta-section-area" style="padding: 50px 0;">
-        <div>
-            <div
-                style="background: #1a3a5c; border-radius: 12px; padding: 64px 48px; position: relative; overflow: hidden; text-align: center;">
-
-                <!-- Background orbs -->
-                <div
-                    style="position: absolute; top: -80px; right: -80px; width: 300px; height: 300px; border-radius: 50%; background: rgba(255,255,255,0.04);">
-                </div>
-                <div
-                    style="position: absolute; bottom: -60px; left: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,0.04);">
-                </div>
-
-                <!-- Tag -->
-                <span
-                    style="display: inline-block; background: rgba(255,255,255,0.12); color: #a8cff5; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 99px; margin-bottom: 1.5rem;">Take the first step</span>
-
-                <!-- Heading -->
-                <h2 style="color: #ffffff; margin: 0 0 1rem; line-height: 1.25;">
-                    Talk to Our <span style="color: #5bb8f5;">Mortgage Experts</span>
-                </h2>
-
-                <!-- Subtext -->
-                <p style="color: rgba(255,255,255,0.72); max-width: 560px; margin: 0 auto 0.75rem; line-height: 1.65;">
-                    Mortgage minds assists the New Zealand homeowners, first
-                    home buyers, and investors to get
-                    intelligent and smart lending solutions. Our team is
-                    prepared to assist you whether you require
-                    refinancing advice, better mortgage rates, or to obtain
-                    a home loan.
-                </p>
-
-            </div>
-        </div>
-    </section>
-    <!-- End CTA Section -->
+    <!-- End Disclosure Content -->
 
     <!-- Start Emergency Call -->
     <div class="newsletter-area bg-theme text-light" style="background-image: url(assets/img/shape/4.png);">
@@ -495,7 +440,7 @@ if ($result === false) {
                     <div class="newsletter-subscribe">
                         <h3><i class="fas fa-user-headset"></i> Let's Make a
                             Call</h3>
-                        <a href="tel:099179769">099179769</a>
+                        <a href="tel:+6408004521 05">099179769</a>
                     </div>
                 </div>
             </div>
@@ -689,19 +634,3 @@ if ($result === false) {
 </body>
 
 </html>
-
-<?php
-// Helper function to trim words (WordPress-like)
-function wp_trim_words($text, $num_words = 20)
-{
-    $text = strip_tags($text);
-    $words = explode(' ', $text);
-    if (count($words) > $num_words) {
-        $words = array_slice($words, 0, $num_words);
-        return implode(' ', $words);
-    }
-    return $text;
-}
-
-$conn->close();
-?>

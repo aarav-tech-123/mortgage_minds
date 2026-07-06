@@ -88,11 +88,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     );
 
     if ($stmt->execute()) {
-        echo json_encode(["status" => "success", "redirect" => "thank-you.html"]);
-        exit();
+       header("Location: thank-you.html");
+       exit();
     } else {
-        echo json_encode(["status" => "error", "message" => "Database insert failed"]);
-        exit();
+       echo "Unable to save your enquiry. Please try again.";
     }
 }
 
