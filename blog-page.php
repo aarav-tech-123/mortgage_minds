@@ -134,14 +134,14 @@ function reading_time($text)
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
 
-    <meta name="title" content="<?php echo htmlspecialchars($post_meta['rank_math_title'] ?? $blog['post_title']); ?>">
+    <meta name="title" content="<?php echo $post_meta['rank_math_title']; ?>">
     <meta name="description"
         content="<?php echo htmlspecialchars($post_meta['rank_math_description'] ?? substr(strip_tags($blog['post_content']), 0, 160)); ?>">
     <meta name="keywords" content="<?php echo htmlspecialchars($post_meta['rank_math_focus_keyword'] ?? 'mortgage, home loan, refinancing, property investment, first home buyer'); ?>">
     <link rel="canonical" href="https://www.mortgageminds.co.nz/blogs/<?php echo $slug; ?>/" />
 
     <!-- ========== Page Title ========== -->
-    <title><?php echo htmlspecialchars($post_meta['rank_math_title'] ?? $blog['post_title']); ?></title>
+    <title><?php echo htmlspecialchars($blog['post_title']); ?></title>
 
     <!-- ========== Favicon Icon ========== -->
     <link rel="shortcut icon" href="https://www.mortgageminds.co.nz/assets/img/logo.png" type="image/x-icon">
@@ -820,6 +820,7 @@ function reading_time($text)
     </div>
     <!-- End Emergency Call -->
 
+
     <!-- Start Footer 
     ============================================= -->
     <footer class="bg-dark footer-one text-light" style="background-image: url(assets/img/shape/27.png);">
@@ -964,7 +965,7 @@ function reading_time($text)
                     <div class="col-lg-4 text-end">
                         <ul>
                             <li>
-                                <a href="disclosure-statement.html">Disclosure Statement</a>
+                                <a href="https://www.mortgageminds.co.nz/disclosure-statement.html">Disclosure Statement</a>
                             </li>
                             <li>
                                 <a href="https://www.mortgageminds.co.nz/terms-conditions.html">Terms</a>
